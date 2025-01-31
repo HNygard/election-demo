@@ -40,6 +40,28 @@ This project helps:
 - Students explore cybersecurity concepts
 - Demonstrate why traditional voting methods remain important
 
+## Technical Implementation
+
+### Backend
+
+The backend is built with Express.js and includes several intentionally transparent features that highlight security concerns:
+
+- In-memory vote storage (votes can be lost on server restart)
+- Voter tracking system that collects:
+  - IP addresses
+  - Browser information
+  - Language preferences
+  - Geographic location (via GeoIP)
+  - Timestamps
+- No authentication required for voting
+- Public API endpoints for:
+  - Submitting votes
+  - Viewing election results
+  - Accessing voter information
+  - Resetting all data
+- Rate limiting (5 requests per 15 minutes per IP)
+- Simple verification codes with no cryptographic security
+
 ## Disclaimer
 
 This application intentionally contains vulnerabilities for educational purposes. Do not use any code from this project in production systems or real election applications.
