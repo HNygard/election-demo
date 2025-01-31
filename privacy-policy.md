@@ -43,3 +43,5 @@ All data will be deleted when the service restarts. If you want to be deleted an
 You have the right to get a copy of your data. This is possible if it's not already deleted (see section about deletion). Contact Data Protection Officer.
 
 Still here? I owe you a beer. Max 3 per election/talk...
+
+<!-- TODO: form for submitting name -->
