@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Results</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .result-section {
+            margin: 2rem 0;
+            padding: 2rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .result-announcement {
+            font-size: 1.4rem;
+            color: var(--text-color);
+            margin: 2rem 0;
+            line-height: 1.6;
+        }
+
+        .winner {
+            font-size: 2rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            display: inline-block;
+        }
+
+        .results-title {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="result-section">
+            <h1 class="results-title">"valgresultat.no"</h1>
+            <div class="result-announcement">
+                The result was:
+                <div class="winner">Java is the best!</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

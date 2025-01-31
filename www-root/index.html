@@ -1,36 +1,28 @@
 
-<div style="font-size: 30px; width: 100%; text-align: center;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Election</h1>
 
-<h1>Election</h1>
+        <form id="election-form" method="POST" action="./election-finish.html">
+            <label>What is best?</label>
+            <div class="options-container">
+                <input type="submit" value="Option A">
+                <input type="submit" value="Option B">
+                <input type="submit" value="Option C">
+            </div>
+        </form>
 
-<style>
-    #election-form {
-        text-align: center;;
-    }
-    #election-form label {
-       display: block;
-    }
-    #election-form input {
-        font-size: 30px;
-        margin: 1em;
-        padding: 1em;
-    }
-</style>
-
-
-<form id="election-form" method="POST" action="./election-finish.html">
-
-    <label>What is best?</label>
-    <input type="submit" value="Option A">
-    <input type="submit" value="Option B">
-    <input type="submit" value="Option C">
-
-</form>
-
-<br><br>
-
-<span style="font-weight: 0.8em;">
-    By participating, you accept the <a href="../privacy-policy.md">privacy policy</a>
-</span>
-
-</div>
+        <div class="privacy-notice">
+            By participating, you accept the <a href="../privacy-policy.md">privacy policy</a>
+        </div>
+    </div>
+</body>
+</html>

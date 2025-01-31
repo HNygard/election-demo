@@ -1,78 +1,137 @@
-<style>
-    body {
-    }
-
-    #election-ok {
-        background-color: rgb(41, 244, 41);
-        padding: 2em;
-        display: none;
-    }
-    #election-failed {
-        background-color: red;
-        padding: 2em;
-        display: none
-    }
-
-</style>
-
-
-<script>
-    function verifiyElectionCode() {
-        var code_element = document.getElementById("election-verification-code");
-        var code = code_element.value;
-        console.log("Code entered: " + code);
-
-        document.getElementById("election-ok").style = 'display: none;';
-        document.getElementById("election-failed").style = 'display: none;';
-
-        if (code.toUpperCase().substring(0, 4) == 'LAMA' && code.length > 4) {
-            // -> Good code. Starts with LAMA and contains more.
-            code2 = code.toUpperCase().substring(4, 5);
-            console.log("Code 2: " + code2);
-
-            /* TODO: spinnner and wait 5 seconds */
-
-            document.getElementById("election-ok").style = 'display: block;';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote Verification - Election</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .verification-form {
+            max-width: 500px;
+            margin: 0 auto;
         }
-        else {
-            document.getElementById("election-failed").style = 'display: block;';
+
+        .verification-input {
+            width: 100%;
+            padding: 0.8em;
+            font-size: 1.2rem;
+            border: 2px solid var(--accent-color);
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            transition: border-color 0.3s ease;
         }
-    }
-</script>
 
-<div style="font-size: 30px; width: 100%; text-align: center;">
+        .verification-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
 
-    <h1>Verification</h1>
-    <span style="font-size: 0.8em;">Verify that your vote was counted in the result.</span>
-        
-    <br><br>
+        .verify-button {
+            width: 100%;
+            padding: 1em;
+            font-size: 1.1rem;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-    <form onsubmit="verifiyElectionCode(); return false;">
-        <label for="election-verification-code" style="display: block;">
-            Verification code:
-        </label>
-        <!-- TODO: make input field bigger -->
-        <input type="text" id="election-verification-code" style="font-size: 30px; display: block; width: 100%;">
-        <br>
-        <input type="submit" value="Verify vote" style="font-size: 30px; display: block; width: 100%;">
-    </form>
+        .verify-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
 
-    <div id="election-ok">
-        Your vote was part of the election.
-        <!-- TODO: Thumbs up. Emojii emojii-->
-        <br><br>
-        <!-- TODO: Different option. "You voted for XYZ" -->
-        <div style="background-color: lightgreen; font-weight: bold; padding: 2em;">
-            You voted for: 
-            XYZ
+        .verify-button:active {
+            transform: translateY(0);
+        }
+
+        #election-ok, #election-failed {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            display: none;
+        }
+
+        #election-ok {
+            background-color: #e8f8f5;
+            border: 2px solid #2ecc71;
+            color: #27ae60;
+        }
+
+        #election-failed {
+            background-color: #fdf1f1;
+            border: 2px solid #e74c3c;
+            color: #c0392b;
+        }
+
+        .vote-result {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            font-weight: bold;
+        }
+
+        .description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+    </style>
+    <script>
+        function verifiyElectionCode() {
+            var code_element = document.getElementById("election-verification-code");
+            var code = code_element.value;
+            console.log("Code entered: " + code);
+
+            document.getElementById("election-ok").style.display = 'none';
+            document.getElementById("election-failed").style.display = 'none';
+
+            if (code.toUpperCase().substring(0, 4) == 'LAMA' && code.length > 4) {
+                code2 = code.toUpperCase().substring(4, 5);
+                console.log("Code 2: " + code2);
+                document.getElementById("election-ok").style.display = 'block';
+            } else {
+                document.getElementById("election-failed").style.display = 'block';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Verification</h1>
+        <div class="message">Verify that your vote was counted in the result.</div>
+
+        <form class="verification-form" onsubmit="verifiyElectionCode(); return false;">
+            <label for="election-verification-code">
+                Verification code:
+            </label>
+            <input type="text" 
+                   id="election-verification-code" 
+                   class="verification-input" 
+                   placeholder="Enter your verification code">
+            <button type="submit" class="verify-button">Verify vote</button>
+        </form>
+
+        <div id="election-ok">
+            <h2>Success! ✅</h2>
+            Your vote was part of the election.
+            <div class="vote-result">
+                You voted for: XYZ
+            </div>
+            <div class="description">
+                Your vote was signed with 4096 bit encryptions. Totally secure and nobody can
+                see what you voted for. I promise. Just like every politician promise!
+            </div>
         </div>
-        <br>
-        Your voted was signed with 4096 bit encryptions. Totally secure and nobody can
-        see what you voted for. I promise. Just like every politician promise!
+
+        <div id="election-failed">
+            <h2>Error! ❌</h2>
+            Verification code not part of the election. Raise your hand if you want to complain.
+        </div>
     </div>
-    <div id="election-failed">
-        Err. Verification code not part of the election. Raise your hand if you want to complain.
-    </div>
-</div>
-    
-    
+</body>
+</html>

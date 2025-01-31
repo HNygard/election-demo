@@ -1,23 +1,56 @@
 
-<div style="font-size: 30px; width: 100%; text-align: center;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - Election</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .verification-code {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin: calc(var(--spacing-unit) * 2) 0;
+            letter-spacing: 2px;
+        }
+        .message {
+            color: var(--text-color);
+            margin: var(--spacing-unit) 0;
+        }
+        .verify-link {
+            display: inline-block;
+            margin-top: calc(var(--spacing-unit) * 2);
+            color: var(--accent-color);
+            text-decoration: none;
+            padding: 0.5em 1em;
+            border: 2px solid var(--accent-color);
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+        .verify-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Thank you!</h1>
+        
+        <div class="message">
+            Thanks for participating in the election.
+        </div>
 
-<h1>Thank you!</h1>
+        <div class="message">
+            Your verification code:
+        </div>
+        <div class="verification-code">
+            LAMA17
+        </div>
 
-<span style="font-size: 0.8em;">Thanks for participating in the election.</span>
-<br><br>
-
-Your verification code:<br>
-<!-- TODO: Random unique number -->
-<b>LAMA17</b>
-
-
-<br><br>
-
-<span style="font-size: 0.8em;">
-    <a href="election-verification.html">Go to verification</a>
-</span>
-
-
-
-</div>
-
+        <a href="election-verification.html" class="verify-link">Go to verification</a>
+    </div>
+</body>
+</html>
