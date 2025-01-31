@@ -90,12 +90,17 @@
             document.getElementById("election-ok").style.display = 'none';
             document.getElementById("election-failed").style.display = 'none';
 
+            const successElement = document.getElementById("election-ok");
+            const failureElement = document.getElementById("election-failed");
+            
             if (code.toUpperCase().substring(0, 4) == 'LAMA' && code.length > 4) {
                 code2 = code.toUpperCase().substring(4, 5);
                 console.log("Code 2: " + code2);
-                document.getElementById("election-ok").style.display = 'block';
+                successElement.style.display = 'block';
+                successElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else {
-                document.getElementById("election-failed").style.display = 'block';
+                failureElement.style.display = 'block';
+                failureElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
     </script>
