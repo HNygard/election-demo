@@ -7,6 +7,44 @@
     <title>Thank You - Election</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            min-height: 60px;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .container {
+            display: none;
+        }
         .verification-code {
             font-size: 2rem;
             font-weight: bold;
@@ -36,7 +74,11 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText"></div>
+    </div>
+    <div class="container" id="mainContent">
         <h1>Thank you!</h1>
         
         <div class="message">
@@ -52,6 +94,42 @@
         <a href="election-verification.html" class="verify-link">Go to verification</a>
 
         <script>
+            const loadingMessages = [
+                "Thank you for making your voice heard!",
+                "Processing your important vote...",
+                "Securing your democratic participation...",
+                "Almost done! Finalizing your contribution..."
+            ];
+
+            let currentMessageIndex = 0;
+            // Random timeout between 2-5 seconds
+            const delay = Math.floor(Math.random() * (5000 - 2000 + 1) + 2000);
+            const messageDisplayTime = delay / 4; // Time for each message since we have 4 messages
+
+            function updateLoadingMessage(index) {
+                const textElement = document.getElementById('loadingText');
+                textElement.style.opacity = '0';
+                
+                setTimeout(() => {
+                    textElement.textContent = loadingMessages[index];
+                    textElement.style.opacity = '1';
+                }, 300);
+            }
+
+            function showContent() {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            }
+
+            // Show each message once during the loading period
+            updateLoadingMessage(0);
+            for (let i = 1; i < loadingMessages.length; i++) {
+                setTimeout(() => updateLoadingMessage(i), messageDisplayTime * i);
+            }
+
+            // Show content after the full delay
+            setTimeout(showContent, delay);
+
             function generateVerificationCode() {
                 const randomNum = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
                 return `LAMA${randomNum}`;
