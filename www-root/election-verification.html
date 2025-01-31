@@ -1,0 +1,78 @@
+<style>
+    body {
+    }
+
+    #election-ok {
+        background-color: rgb(41, 244, 41);
+        padding: 2em;
+        display: none;
+    }
+    #election-failed {
+        background-color: red;
+        padding: 2em;
+        display: none
+    }
+
+</style>
+
+
+<script>
+    function verifiyElectionCode() {
+        var code_element = document.getElementById("election-verification-code");
+        var code = code_element.value;
+        console.log("Code entered: " + code);
+
+        document.getElementById("election-ok").style = 'display: none;';
+        document.getElementById("election-failed").style = 'display: none;';
+
+        if (code.toUpperCase().substring(0, 4) == 'LAMA' && code.length > 4) {
+            // -> Good code. Starts with LAMA and contains more.
+            code2 = code.toUpperCase().substring(4, 5);
+            console.log("Code 2: " + code2);
+
+            /* TODO: spinnner and wait 5 seconds */
+
+            document.getElementById("election-ok").style = 'display: block;';
+        }
+        else {
+            document.getElementById("election-failed").style = 'display: block;';
+        }
+    }
+</script>
+
+<div style="font-size: 30px; width: 100%; text-align: center;">
+
+    <h1>Verification</h1>
+    <span style="font-size: 0.8em;">Verify that your vote was counted in the result.</span>
+        
+    <br><br>
+
+    <form onsubmit="verifiyElectionCode(); return false;">
+        <label for="election-verification-code" style="display: block;">
+            Verification code:
+        </label>
+        <!-- TODO: make input field bigger -->
+        <input type="text" id="election-verification-code" style="font-size: 30px; display: block; width: 100%;">
+        <br>
+        <input type="submit" value="Verify vote" style="font-size: 30px; display: block; width: 100%;">
+    </form>
+
+    <div id="election-ok">
+        Your vote was part of the election.
+        <!-- TODO: Thumbs up. Emojii emojii-->
+        <br><br>
+        <!-- TODO: Different option. "You voted for XYZ" -->
+        <div style="background-color: lightgreen; font-weight: bold; padding: 2em;">
+            You voted for: 
+            XYZ
+        </div>
+        <br>
+        Your voted was signed with 4096 bit encryptions. Totally secure and nobody can
+        see what you voted for. I promise. Just like every politician promise!
+    </div>
+    <div id="election-failed">
+        Err. Verification code not part of the election. Raise your hand if you want to complain.
+    </div>
+</div>
+    
+    
