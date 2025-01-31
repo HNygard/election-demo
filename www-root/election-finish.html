@@ -46,11 +46,18 @@
         <div class="message">
             Your verification code:
         </div>
-        <div class="verification-code">
-            LAMA17
+        <div class="verification-code" id="verificationCode">
         </div>
 
         <a href="election-verification.html" class="verify-link">Go to verification</a>
+
+        <script>
+            function generateVerificationCode() {
+                const randomNum = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
+                return `LAMA${randomNum}`;
+            }
+            document.getElementById('verificationCode').textContent = generateVerificationCode();
+        </script>
     </div>
 </body>
 </html>
