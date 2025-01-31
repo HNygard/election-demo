@@ -1,0 +1,19 @@
+{
+    "elections": {
+        "NDC 2024": {
+            "questions": [
+                {
+                    "question": "What's the best programming language in the World",
+                    "options": [
+                        "C#",
+                        "Java",
+                        "Javascript",
+                        "Python",
+                        "PHP",
+                        "I only prompt"
+                    ]
+                }
+            ]
+        }
+    }
+}

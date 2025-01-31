@@ -1,0 +1,16 @@
+{
+  "name": "election-demo-backend",
+  "version": "1.0.0",
+  "description": "Backend for election demo application",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "express-rate-limit": "^7.1.5",
+    "geoip-lite": "^1.4.9"
+  }
+}
