@@ -7,6 +7,8 @@ services:
       - "3000:3000"
     volumes:
       - ./elections.json:/app/elections.json:ro
+      - ./www-root:/app/www-root:ro
+      - ./privacy-policy.md:/app/privacy-policy.md:ro
     environment:
       - NODE_ENV=production
       - PORT=3000

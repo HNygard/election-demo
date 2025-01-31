@@ -82,7 +82,7 @@
         }
     </style>
     <script>
-        function verifiyElectionCode() {
+        function verifyElectionCode() {
             var code_element = document.getElementById("election-verification-code");
             var code = code_element.value;
             console.log("Code entered: " + code);
@@ -93,6 +93,7 @@
             const successElement = document.getElementById("election-ok");
             const failureElement = document.getElementById("election-failed");
             
+            // Fake verification - accepts any code starting with LAMA
             if (code.toUpperCase().substring(0, 4) == 'LAMA' && code.length > 4) {
                 code2 = code.toUpperCase().substring(4, 5);
                 console.log("Code 2: " + code2);
@@ -110,7 +111,7 @@
         <h1>Verification</h1>
         <div class="message">Verify that your vote was counted in the result.</div>
 
-        <form class="verification-form" onsubmit="verifiyElectionCode(); return false;">
+        <form class="verification-form" onsubmit="verifyElectionCode(); return false;">
             <label for="election-verification-code">
                 Verification code:
             </label>

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,19 +9,94 @@
 <body>
     <div class="container">
         <h1>Election</h1>
-
-        <form id="election-form" method="POST" action="./election-finish.html">
-            <label>What is best?</label>
-            <div class="options-container">
-                <input type="submit" value="Option A">
-                <input type="submit" value="Option B">
-                <input type="submit" value="Option C">
-            </div>
-        </form>
-
+        <div id="election-container">Loading election...</div>
         <div class="privacy-notice">
-            By participating, you accept the <a href="../privacy-policy.md">privacy policy</a>
+            By participating, you accept the <a href="/privacy-policy">privacy policy</a>
         </div>
     </div>
+
+    <script>
+        // Fetch election data and render form
+        async function loadElection() {
+            try {
+                const response = await fetch('/api/elections');
+                const elections = await response.json();
+                
+                // For demo, use first election
+                const electionId = Object.keys(elections)[0];
+                const election = elections[electionId];
+                
+                const container = document.getElementById('election-container');
+                
+                // Create form for each question
+                const form = document.createElement('form');
+                form.id = 'election-form';
+                
+                election.questions.forEach((q, qIndex) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'question';
+                    
+                    const label = document.createElement('label');
+                    label.textContent = q.question;
+                    questionDiv.appendChild(label);
+                    
+                    const optionsDiv = document.createElement('div');
+                    optionsDiv.className = 'options-container';
+                    
+                    q.options.forEach(option => {
+                        const button = document.createElement('input');
+                        button.type = 'submit';
+                        button.value = option;
+                        button.onclick = (e) => handleVote(e, electionId, qIndex, option);
+                        optionsDiv.appendChild(button);
+                    });
+                    
+                    questionDiv.appendChild(optionsDiv);
+                    form.appendChild(questionDiv);
+                });
+                
+                container.innerHTML = '';
+                container.appendChild(form);
+            } catch (error) {
+                console.error('Error loading election:', error);
+                document.getElementById('election-container').innerHTML = 
+                    'Error loading election. Please try again later.';
+            }
+        }
+
+        // Handle vote submission
+        async function handleVote(event, electionId, questionIndex, selectedOption) {
+            event.preventDefault();
+            
+            try {
+                const response = await fetch(`/api/vote/${electionId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        answers: {
+                            [questionIndex]: selectedOption
+                        }
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Redirect to finish page with verification code
+                    window.location.href = `./election-finish.html?code=${result.verificationCode}`;
+                } else {
+                    alert('Error submitting vote. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error submitting vote:', error);
+                alert('Error submitting vote. Please try again.');
+            }
+        }
+
+        // Load election on page load
+        loadElection();
+    </script>
 </body>
 </html>

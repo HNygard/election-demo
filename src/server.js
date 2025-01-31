@@ -1,28 +1,33 @@
 import express from 'express';
 import cors from 'cors';
-import rateLimit from 'express-rate-limit';
 import geoip from 'geoip-lite';
 import { readFileSync } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Load elections configuration
-const elections = JSON.parse(readFileSync('./elections.json', 'utf8')).elections;
+const elections = JSON.parse(readFileSync(path.join(__dirname, '../elections.json'), 'utf8')).elections;
 
 // In-memory storage
 const votes = new Map();
 const voterInfo = new Map();
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5 // limit each IP to 5 requests per windowMs
-});
-
 app.use(cors());
 app.use(express.json());
-app.use(limiter);
+
+// Serve static files from www-root directory
+app.use(express.static(path.join(__dirname, '../www-root')));
+
+// Serve privacy policy
+app.get('/privacy-policy', (req, res) => {
+  res.sendFile(path.join(__dirname, '../privacy-policy.md'));
+});
 
 // Middleware to collect user data
 app.use((req, res, next) => {
