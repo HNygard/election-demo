@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +6,7 @@
     <title>Election Results</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        .result-section {
+        .info-section {
             margin: 2rem 0;
             padding: 2rem;
             background-color: white;
@@ -26,6 +25,14 @@
             border: 1px solid #dee2e6;
         }
 
+        .result-section {
+            margin: 2rem 0;
+            padding: 2rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
         .results-title {
             color: var(--primary-color);
             font-size: 1.8rem;
@@ -33,36 +40,207 @@
             text-align: center;
         }
 
-        .todo-notice {
-            background-color: #fff3cd;
-            color: #856404;
+        .vote-count {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--accent-color);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .result-item {
+            background: #f8f9fa;
             padding: 1rem;
             border-radius: var(--border-radius);
-            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .result-item .language {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .result-item .votes {
+            font-size: 1.5rem;
+            margin: 0.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .result-item .percentage {
+            color: var(--accent-color);
             font-size: 0.9rem;
-            border: 1px solid #ffeeba;
+        }
+
+        .recent-votes {
+            margin-top: 2rem;
+        }
+
+        .recent-votes h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .recent-vote {
+            background: #fff;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent-color);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Election System</h1>
-        
-        <div class="result-section">
-            <div class="message">Go to this URL:</div>
+        <h1>Electronic voting</h1>
+             
+        <div class="info-section">
+            <div class="message">Go to this URL and cast your vote:</div>
             <div class="url-display">https://Abc</div>
-            
             <div class="todo-notice">
                 Note: QR code will be displayed here for easy access
-            </div>
+                </div>
         </div>
-
         <div class="result-section">
-            <h2 class="results-title">"valgresultat.no"</h2>
-            <div class="todo-notice">
-                Coming soon: Live animation of incoming election results
+            <h2 class="results-title">Best Programming Language Poll</h2>
+            <div class="vote-count">Total Votes: <span id="totalVotes">0</span></div>
+            
+            <div id="resultsGrid" class="results-grid">
+                <!-- Results will be populated here -->
+            </div>
+
+            <div class="recent-votes">
+                <h3>Recent Votes</h3>
+                <div id="recentVotes">
+                    <!-- Recent votes will be populated here -->
+                </div>
             </div>
         </div>
     </div>
+
+    <script>
+        let previousResults = null;
+        const recentVotes = [];
+
+        function updateResults(results) {
+            const totalVotes = Object.values(results[0]).reduce((a, b) => a + b, 0);
+            document.getElementById('totalVotes').textContent = totalVotes;
+
+            const resultsGrid = document.getElementById('resultsGrid');
+            const languages = Object.keys(results[0]);
+
+            // Create or update result items
+            languages.forEach(language => {
+                const votes = results[0][language];
+                const percentage = ((votes / totalVotes) * 100).toFixed(1);
+                
+                let resultItem = document.getElementById(`result-${language}`);
+                
+                if (!resultItem) {
+                    resultItem = document.createElement('div');
+                    resultItem.id = `result-${language}`;
+                    resultItem.className = 'result-item';
+                    resultItem.innerHTML = `
+                        <div class="language">${language}</div>
+                        <div class="votes">0</div>
+                        <div class="percentage">0%</div>
+                    `;
+                    resultsGrid.appendChild(resultItem);
+                }
+
+                // Animate changes if previous results exist
+                if (previousResults && previousResults[0][language] !== votes) {
+                    const votesElement = resultItem.querySelector('.votes');
+                    const previousVotes = previousResults[0][language];
+                    animateNumber(votesElement, previousVotes, votes);
+                } else {
+                    resultItem.querySelector('.votes').textContent = votes;
+                }
+                
+                resultItem.querySelector('.percentage').textContent = `${percentage}%`;
+            });
+
+            // Update recent votes if total votes changed
+            if (!previousResults || 
+                Object.values(results[0]).reduce((a, b) => a + b, 0) > 
+                Object.values(previousResults[0]).reduce((a, b) => a + b, 0)) {
+                
+                // Find the new vote by comparing with previous results
+                languages.forEach(language => {
+                    if (!previousResults || results[0][language] > previousResults[0][language]) {
+                        recentVotes.unshift({
+                            language,
+                            timestamp: new Date()
+                        });
+                    }
+                });
+
+                // Keep only the 5 most recent votes
+                while (recentVotes.length > 5) {
+                    recentVotes.pop();
+                }
+
+                // Update recent votes display
+                const recentVotesContainer = document.getElementById('recentVotes');
+                recentVotesContainer.innerHTML = recentVotes.map(vote => `
+                    <div class="recent-vote">
+                        Vote for ${vote.language} at ${vote.timestamp.toLocaleTimeString()}
+                    </div>
+                `).join('');
+            }
+
+            previousResults = results;
+        }
+
+        function animateNumber(element, start, end) {
+            const duration = 1000; // 1 second
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                const current = Math.round(start + (end - start) * progress);
+                element.textContent = current;
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        async function fetchResults() {
+            try {
+                const response = await fetch('/api/results/NDC%202024');
+                const results = await response.json();
+                updateResults(results);
+            } catch (error) {
+                console.error('Error fetching results:', error);
+            }
+        }
+
+        // Initial fetch and setup interval
+        fetchResults();
+        setInterval(fetchResults, 1000);
+    </script>
 </body>
 </html>
