@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,12 +43,22 @@
 <body>
     <div class="container">
         <div class="result-section">
-            <h1 class="results-title">"valgresultat.no"</h1>
+            <div class="nav-container">
+                <button class="nav-btn prev-btn" onclick="navigate(-1)">&larr;</button>
+                <h1 class="results-title">"valgresultat.no"</h1>
+                <button class="nav-btn next-btn" onclick="navigate(1)">&rarr;</button>
+            </div>
             <div class="result-announcement">
                 The result was:
                 <div class="winner">Java is the best!</div>
             </div>
         </div>
     </div>
+
+    <script>
+        const currentPage = 1;
+        const totalPages = 4;
+    </script>
+    <script src="navigation.js"></script>
 </body>
 </html>

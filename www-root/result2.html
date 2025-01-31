@@ -36,9 +36,19 @@
 <body>
     <div class="container">
         <div class="result-section">
-            <h1 class="results-title">"valgresultat.no"</h1>
+            <div class="nav-container">
+                <button class="nav-btn prev-btn" onclick="navigate(-1)">&larr;</button>
+                <h1 class="results-title">"valgresultat.no"</h1>
+                <button class="nav-btn next-btn" onclick="navigate(1)">&rarr;</button>
+            </div>
             <h2 class="results-subtitle">Actual results! Promise!</h2>
         </div>
     </div>
+
+    <script>
+        const currentPage = 2;
+        const totalPages = 4;
+    </script>
+    <script src="navigation.js"></script>
 </body>
 </html>

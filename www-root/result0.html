@@ -109,7 +109,11 @@
 </head>
 <body>
     <div class="container">
-        <h1>Electronic voting</h1>
+        <div class="nav-container">
+            <button class="nav-btn prev-btn" onclick="navigate(-1)">&larr;</button>
+            <h1>Electronic voting</h1>
+            <button class="nav-btn next-btn" onclick="navigate(1)">&rarr;</button>
+        </div>
              
         <div class="info-section">
             <div class="message">Go to this URL and cast your vote:</div>
@@ -138,76 +142,8 @@
     <script>
         let previousResults = null;
         const recentVotes = [];
-
-        function updateResults(results) {
-            const totalVotes = Object.values(results[0]).reduce((a, b) => a + b, 0);
-            document.getElementById('totalVotes').textContent = totalVotes;
-
-            const resultsGrid = document.getElementById('resultsGrid');
-            const languages = Object.keys(results[0]);
-
-            // Create or update result items
-            languages.forEach(language => {
-                const votes = results[0][language];
-                const percentage = ((votes / totalVotes) * 100).toFixed(1);
-                
-                let resultItem = document.getElementById(`result-${language}`);
-                
-                if (!resultItem) {
-                    resultItem = document.createElement('div');
-                    resultItem.id = `result-${language}`;
-                    resultItem.className = 'result-item';
-                    resultItem.innerHTML = `
-                        <div class="language">${language}</div>
-                        <div class="votes">0</div>
-                        <div class="percentage">0%</div>
-                    `;
-                    resultsGrid.appendChild(resultItem);
-                }
-
-                // Animate changes if previous results exist
-                if (previousResults && previousResults[0][language] !== votes) {
-                    const votesElement = resultItem.querySelector('.votes');
-                    const previousVotes = previousResults[0][language];
-                    animateNumber(votesElement, previousVotes, votes);
-                } else {
-                    resultItem.querySelector('.votes').textContent = votes;
-                }
-                
-                resultItem.querySelector('.percentage').textContent = `${percentage}%`;
-            });
-
-            // Update recent votes if total votes changed
-            if (!previousResults || 
-                Object.values(results[0]).reduce((a, b) => a + b, 0) > 
-                Object.values(previousResults[0]).reduce((a, b) => a + b, 0)) {
-                
-                // Find the new vote by comparing with previous results
-                languages.forEach(language => {
-                    if (!previousResults || results[0][language] > previousResults[0][language]) {
-                        recentVotes.unshift({
-                            language,
-                            timestamp: new Date()
-                        });
-                    }
-                });
-
-                // Keep only the 5 most recent votes
-                while (recentVotes.length > 5) {
-                    recentVotes.pop();
-                }
-
-                // Update recent votes display
-                const recentVotesContainer = document.getElementById('recentVotes');
-                recentVotesContainer.innerHTML = recentVotes.map(vote => `
-                    <div class="recent-vote">
-                        Vote for ${vote.language} at ${vote.timestamp.toLocaleTimeString()}
-                    </div>
-                `).join('');
-            }
-
-            previousResults = results;
-        }
+        const currentPage = 0;
+        const totalPages = 4;
 
         function animateNumber(element, start, end) {
             const duration = 1000; // 1 second
@@ -228,6 +164,70 @@
             requestAnimationFrame(update);
         }
 
+        function updateResults(results) {
+            const totalVotes = Object.values(results[0]).reduce((a, b) => a + b, 0);
+            document.getElementById('totalVotes').textContent = totalVotes;
+
+            const resultsGrid = document.getElementById('resultsGrid');
+            const languages = Object.keys(results[0]);
+
+            languages.forEach(language => {
+                const votes = results[0][language];
+                const percentage = ((votes / totalVotes) * 100).toFixed(1);
+                
+                let resultItem = document.getElementById(`result-${language}`);
+                
+                if (!resultItem) {
+                    resultItem = document.createElement('div');
+                    resultItem.id = `result-${language}`;
+                    resultItem.className = 'result-item';
+                    resultItem.innerHTML = `
+                        <div class="language">${language}</div>
+                        <div class="votes">0</div>
+                        <div class="percentage">0%</div>
+                    `;
+                    resultsGrid.appendChild(resultItem);
+                }
+
+                if (previousResults && previousResults[0][language] !== votes) {
+                    const votesElement = resultItem.querySelector('.votes');
+                    const previousVotes = previousResults[0][language];
+                    animateNumber(votesElement, previousVotes, votes);
+                } else {
+                    resultItem.querySelector('.votes').textContent = votes;
+                }
+                
+                resultItem.querySelector('.percentage').textContent = `${percentage}%`;
+            });
+
+            if (!previousResults || 
+                Object.values(results[0]).reduce((a, b) => a + b, 0) > 
+                Object.values(previousResults[0]).reduce((a, b) => a + b, 0)) {
+                
+                languages.forEach(language => {
+                    if (!previousResults || results[0][language] > previousResults[0][language]) {
+                        recentVotes.unshift({
+                            language,
+                            timestamp: new Date()
+                        });
+                    }
+                });
+
+                while (recentVotes.length > 5) {
+                    recentVotes.pop();
+                }
+
+                const recentVotesContainer = document.getElementById('recentVotes');
+                recentVotesContainer.innerHTML = recentVotes.map(vote => `
+                    <div class="recent-vote">
+                        Vote for ${vote.language} at ${vote.timestamp.toLocaleTimeString()}
+                    </div>
+                `).join('');
+            }
+
+            previousResults = results;
+        }
+
         async function fetchResults() {
             try {
                 const response = await fetch('/api/results/NDC%202024');
@@ -238,9 +238,9 @@
             }
         }
 
-        // Initial fetch and setup interval
         fetchResults();
         setInterval(fetchResults, 1000);
     </script>
+    <script src="navigation.js"></script>
 </body>
 </html>
