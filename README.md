@@ -15,7 +15,7 @@ This is a demonstration tool only. It should NOT be used for actual elections or
 ## (TODO) Security Concerns Demonstrated
 
 - Potential for vote manipulation
-    - I will manipulated the published result.
+    - I will manipulate the published result.
 - Issues with voter anonymity
     - I will show snippet of the logs with details like IP,
       browser, etc
