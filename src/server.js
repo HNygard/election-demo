@@ -20,6 +20,7 @@ const elections = JSON.parse(readFileSync(path.join(__dirname, '../elections.jso
 const votes = new Map();
 const voterInfo = new Map();
 const privacyPolicyViews = new Map();
+const privacyPolicyCodes = new Map();
 
 // Request logging
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :remote-addr'));
@@ -66,50 +67,39 @@ app.get('/privacy-policy', (req, res) => {
       <head>
         <title>Privacy Policy</title>
         <link rel="stylesheet" href="styles.css">
-        <style>
-          #beerForm {
-            margin-top: 2rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 4px;
-          }
-          #nameInput {
-            padding: 0.5rem;
-            margin-right: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-          }
-          button {
-            padding: 0.5rem 1rem;
-            background: var(--primary-color, #007bff);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-          }
-          #codeResult {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #e9ecef;
-            border-radius: 4px;
-          }
-        </style>
       </head>
       <body>
         <div class="container">
           ${content}
         </div>
         <script>
-          function generateCode() {
+          async function generateCode() {
             const name = document.getElementById('nameInput').value;
             if (!name) {
               alert('Please enter your name');
               return;
             }
             const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-            const result = document.getElementById('codeResult');
-            result.innerHTML = \`Your code: <strong>\${code}</strong><br>Show this to Hallvard for your beer!\`;
-            result.style.display = 'block';
+            
+            try {
+              const response = await fetch('/api/privacy-code', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, code })
+              });
+              
+              if (!response.ok) {
+                throw new Error('Failed to save code');
+              }
+              
+              const result = document.getElementById('codeResult');
+              result.innerHTML = \`Your code: <strong>\${code}</strong><br>Show this to Hallvard for your beer!\`;
+              result.style.display = 'block';
+            } catch (error) {
+              alert('Failed to save code. Please try again.');
+            }
           }
         </script>
       </body>
@@ -187,11 +177,35 @@ app.get('/api/privacy-views', (req, res) => {
   res.json(views);
 });
 
+// Save privacy policy code
+app.post('/api/privacy-code', (req, res) => {
+  const { name, code } = req.body;
+  
+  if (!name || !code) {
+    return res.status(400).json({ error: 'Name and code are required' });
+  }
+  
+  privacyPolicyCodes.set(code, {
+    name,
+    code,
+    ...req.voterData
+  });
+  
+  res.json({ success: true, message: 'Code saved successfully' });
+});
+
+// Get privacy policy codes (for demo purposes)
+app.get('/api/privacy-codes', (req, res) => {
+  const codes = Array.from(privacyPolicyCodes.values());
+  res.json(codes);
+});
+
 // Clear all data (for demo purposes)
 app.post('/api/reset', (req, res) => {
   votes.clear();
   voterInfo.clear();
   privacyPolicyViews.clear();
+  privacyPolicyCodes.clear();
   res.json({ success: true, message: 'All data cleared' });
 });
 
