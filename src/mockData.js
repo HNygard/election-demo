@@ -88,10 +88,10 @@ function generateIP(countryCode) {
 }
 
 function generateTimestamp() {
-  // Generate timestamps within the last 24 hours
+  // Generate timestamps within the last few minutes to simulate live voting
   const now = new Date();
-  const yesterday = new Date(now - 24 * 60 * 60 * 1000);
-  const randomTime = yesterday.getTime() + Math.random() * (now.getTime() - yesterday.getTime());
+  const fiveMinutesAgo = new Date(now - 5 * 60 * 1000);
+  const randomTime = fiveMinutesAgo.getTime() + Math.random() * (now.getTime() - fiveMinutesAgo.getTime());
   return new Date(randomTime).toISOString();
 }
 

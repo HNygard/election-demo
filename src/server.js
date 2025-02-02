@@ -18,9 +18,43 @@ const port = process.env.PORT || 3000;
 const elections = JSON.parse(readFileSync(path.join(__dirname, '../elections.json'), 'utf8')).elections;
 
 // In-memory storage
-const { votes, voterInfo } = generateMockVotes(120);
+const votes = new Map();
+const voterInfo = new Map();
 const privacyPolicyViews = new Map();
 const privacyPolicyCodes = new Map();
+
+// Simulate votes over time
+let votingStarted = false;
+let votingInterval;
+
+function startVotingSimulation() {
+  if (votingStarted) return;
+  votingStarted = true;
+  
+  // Initial batch of votes (smaller)
+  const { votes: initialVotes, voterInfo: initialInfo } = generateMockVotes(30);
+  initialVotes.forEach((value, key) => votes.set(key, value));
+  initialInfo.forEach((value, key) => voterInfo.set(key, value));
+  
+  // Add more votes every few seconds
+  votingInterval = setInterval(() => {
+    // Generate 5-15 votes each interval
+    const batchSize = Math.floor(Math.random() * 10) + 5;
+    const { votes: newVotes, voterInfo: newInfo } = generateMockVotes(batchSize);
+    
+    newVotes.forEach((value, key) => votes.set(key, value));
+    newInfo.forEach((value, key) => voterInfo.set(key, value));
+    
+    // Stop after reaching ~150 total votes
+    if (votes.size >= 150) {
+      clearInterval(votingInterval);
+      votingStarted = false;
+    }
+  }, 10000); // Add votes every 10 seconds
+}
+
+// Start vote simulation on server start
+startVotingSimulation();
 
 // Request logging
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :remote-addr'));
@@ -211,13 +245,33 @@ app.get('/api/privacy-codes', (req, res) => {
   res.json(codes);
 });
 
-// Clear all data (for demo purposes)
+// Get simulation status (for demo purposes)
+app.get('/api/simulation/status', (req, res) => {
+  res.json({
+    active: votingStarted,
+    totalVotes: votes.size,
+    targetVotes: 150
+  });
+});
+
+// Clear all data and restart simulation (for demo purposes)
 app.post('/api/reset', (req, res) => {
+  // Clear all data
   votes.clear();
   voterInfo.clear();
   privacyPolicyViews.clear();
   privacyPolicyCodes.clear();
-  res.json({ success: true, message: 'All data cleared' });
+  
+  // Clear existing interval if any
+  if (votingInterval) {
+    clearInterval(votingInterval);
+    votingStarted = false;
+  }
+  
+  // Restart voting simulation
+  startVotingSimulation();
+  
+  res.json({ success: true, message: 'All data cleared and voting simulation restarted' });
 });
 
 app.listen(port, () => {
