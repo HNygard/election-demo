@@ -6,6 +6,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { marked } from 'marked';
+import { generateMockVotes } from './mockData.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,8 +18,7 @@ const port = process.env.PORT || 3000;
 const elections = JSON.parse(readFileSync(path.join(__dirname, '../elections.json'), 'utf8')).elections;
 
 // In-memory storage
-const votes = new Map();
-const voterInfo = new Map();
+const { votes, voterInfo } = generateMockVotes(120);
 const privacyPolicyViews = new Map();
 const privacyPolicyCodes = new Map();
 
