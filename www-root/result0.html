@@ -7,14 +7,17 @@
     <link rel="stylesheet" href="styles.css">
     <style>
         .info-section {
-            margin: 2rem 0;
+            margin-top: 0;
+            margin-right: 0px;
+            margin-bottom: 2rem;
+            margin-left: 0px;
             padding: 2rem;
             background-color: white;
             border-radius: var(--border-radius);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .url-display {
+        #url-display {
             background-color: #f8f9fa;
             padding: 1rem;
             border-radius: var(--border-radius);
@@ -109,7 +112,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="nav-container">
+        <div class="nav-container" style="margin-bottom: 0;">
             <button class="nav-btn prev-btn" onclick="navigate(-1)">&larr;</button>
             <h1>Electronic voting</h1>
             <button class="nav-btn next-btn" onclick="navigate(1)">&rarr;</button>
@@ -117,10 +120,20 @@
              
         <div class="info-section">
             <div class="message">Go to this URL and cast your vote:</div>
-            <div class="url-display">https://Abc</div>
-            <div class="todo-notice">
-                Note: QR code will be displayed here for easy access
-                </div>
+            <div id="url-display">(... loading ...)</div>
+            <img id="qr-code" 
+                alt="QR Code for election site"
+                style="display: block; margin: 20px auto; width: 200px;">
+            <script>
+                // Load QR code
+                fetch('/api/qr-code')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('qr-code').src = data.png;
+                        document.getElementById('url-display').innerHTML = data.url;
+                    })
+                    .catch(error => console.error('Error loading QR code:', error));
+            </script>
         </div>
         <div class="result-section">
             <h2 class="results-title">(... loading ...)</h2>

@@ -2,11 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import geoip from 'geoip-lite';
 import morgan from 'morgan';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
+import QRCode from 'qrcode';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { marked } from 'marked';
 import { generateMockVotes } from './mockData.js';
+import { url } from 'inspector';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,6 +54,25 @@ function startVotingSimulation() {
     }
   }, 10000); // Add votes every 10 seconds
 }
+
+// Serve QR code
+app.get('/api/qr-code', async (req, res) => {
+  try {
+    const qrUrl = 'https://election.hnygard.no/';
+    const qrDataUrl = await QRCode.toDataURL(qrUrl, {
+      errorCorrectionLevel: 'H',
+      margin: 1,
+      width: 200
+    });
+    res.json({ 
+      png: qrDataUrl,
+      url: qrUrl
+     });
+  } catch (err) {
+    console.error('Error generating QR code:', err);
+    res.status(500).json({ error: 'Failed to generate QR code' });
+  }
+});
 
 // Start vote simulation on server start
 startVotingSimulation();
