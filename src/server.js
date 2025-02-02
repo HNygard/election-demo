@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import geoip from 'geoip-lite';
+import morgan from 'morgan';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -17,6 +18,9 @@ const elections = JSON.parse(readFileSync(path.join(__dirname, '../elections.jso
 // In-memory storage
 const votes = new Map();
 const voterInfo = new Map();
+
+// Request logging
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :remote-addr'));
 
 app.use(cors());
 app.use(express.json());
