@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { marked } from 'marked';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,7 +31,23 @@ app.use(express.static(path.join(__dirname, '../www-root')));
 
 // Serve privacy policy
 app.get('/privacy-policy', (req, res) => {
-  res.sendFile(path.join(__dirname, '../privacy-policy.md'));
+  const markdown = readFileSync(path.join(__dirname, '../privacy-policy.md'), 'utf-8');
+  const content = marked(markdown);
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Privacy Policy</title>
+        <link rel="stylesheet" href="/styles.css">
+      </head>
+      <body>
+        <div class="container">
+          ${content}
+        </div>
+      </body>
+    </html>
+  `;
+  res.send(html);
 });
 
 // Middleware to collect user data
