@@ -19,36 +19,13 @@ const elections = JSON.parse(readFileSync(path.join(__dirname, '../elections.jso
 // In-memory storage
 const votes = new Map();
 const voterInfo = new Map();
+const privacyPolicyViews = new Map();
 
 // Request logging
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :remote-addr'));
 
 app.use(cors());
 app.use(express.json());
-
-// Serve static files from www-root directory
-app.use(express.static(path.join(__dirname, '../www-root')));
-
-// Serve privacy policy
-app.get('/privacy-policy', (req, res) => {
-  const markdown = readFileSync(path.join(__dirname, '../privacy-policy.md'), 'utf-8');
-  const content = marked(markdown);
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Privacy Policy</title>
-        <link rel="stylesheet" href="/styles.css">
-      </head>
-      <body>
-        <div class="container">
-          ${content}
-        </div>
-      </body>
-    </html>
-  `;
-  res.send(html);
-});
 
 // Middleware to collect user data
 app.use((req, res, next) => {
@@ -67,6 +44,78 @@ app.use((req, res, next) => {
   };
   
   next();
+});
+
+// Serve static files from www-root directory
+app.use(express.static(path.join(__dirname, '../www-root')));
+
+// Serve privacy policy
+app.get('/privacy-policy', (req, res) => {
+  const markdown = readFileSync(path.join(__dirname, '../privacy-policy.md'), 'utf-8');
+  const content = marked(markdown);
+  
+  // Record privacy policy view
+  const viewId = Math.random().toString(36).substring(2, 15);
+  privacyPolicyViews.set(viewId, {
+    ...req.voterData,
+    viewId
+  });
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Privacy Policy</title>
+        <link rel="stylesheet" href="styles.css">
+        <style>
+          #beerForm {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+          }
+          #nameInput {
+            padding: 0.5rem;
+            margin-right: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+          }
+          button {
+            padding: 0.5rem 1rem;
+            background: var(--primary-color, #007bff);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+          }
+          #codeResult {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #e9ecef;
+            border-radius: 4px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          ${content}
+        </div>
+        <script>
+          function generateCode() {
+            const name = document.getElementById('nameInput').value;
+            if (!name) {
+              alert('Please enter your name');
+              return;
+            }
+            const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const result = document.getElementById('codeResult');
+            result.innerHTML = \`Your code: <strong>\${code}</strong><br>Show this to Hallvard for your beer!\`;
+            result.style.display = 'block';
+          }
+        </script>
+      </body>
+    </html>
+  `;
+  res.send(html);
 });
 
 // Get available elections
@@ -132,10 +181,17 @@ app.get('/api/voter-info', (req, res) => {
   res.json(voterData);
 });
 
+// Get privacy policy views (for demo purposes)
+app.get('/api/privacy-views', (req, res) => {
+  const views = Array.from(privacyPolicyViews.values());
+  res.json(views);
+});
+
 // Clear all data (for demo purposes)
 app.post('/api/reset', (req, res) => {
   votes.clear();
   voterInfo.clear();
+  privacyPolicyViews.clear();
   res.json({ success: true, message: 'All data cleared' });
 });
 

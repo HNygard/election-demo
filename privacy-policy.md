@@ -44,4 +44,24 @@ You have the right to get a copy of your data. This is possible if it's not alre
 
 Still here? I owe you a beer. Max 3 per election/talk...
 
-<!-- TODO: form for submitting name -->
+## Claim your beer!
+
+<div id="beerForm">
+  <input type="text" id="nameInput" placeholder="Enter your name" />
+  <button onclick="generateCode()">Generate Code</button>
+  <div id="codeResult" style="margin-top: 1rem; display: none;"></div>
+</div>
+
+<script>
+function generateCode() {
+  const name = document.getElementById('nameInput').value;
+  if (!name) {
+    alert('Please enter your name');
+    return;
+  }
+  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const result = document.getElementById('codeResult');
+  result.innerHTML = `Your code: <strong>${code}</strong><br>Show this to Hallvard for your beer!`;
+  result.style.display = 'block';
+}
+</script>

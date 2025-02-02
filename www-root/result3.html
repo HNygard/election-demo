@@ -43,7 +43,28 @@
 
         <div class="result-section">
             <h2 class="results-subtitle">Actual results! Promise!</h2>
+            <div id="privacyStats" class="results-subtitle" style="margin-top: 2rem;">
+                Loading privacy policy views...
+            </div>
         </div>
+
+        <script>
+            // Fetch privacy policy views
+            fetch('/api/privacy-views')
+                .then(response => response.json())
+                .then(views => {
+                    const stats = document.getElementById('privacyStats');
+                    stats.innerHTML = `
+                        Number of privacy policy readers: ${views.length}<br>
+                        <small>(They actually read it!)</small>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error fetching privacy views:', error);
+                    const stats = document.getElementById('privacyStats');
+                    stats.innerHTML = 'Error loading privacy policy views';
+                });
+        </script>
     </div>
 
     <script>
