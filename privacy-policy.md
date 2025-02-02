@@ -44,8 +44,6 @@ You have the right to get a copy of your data. This is possible if it's not alre
 
 Still here? I owe you a beer. Max 3 per election/talk...
 
-## Claim your beer!
-
 <div id="beerForm">
   <input type="text" id="nameInput" placeholder="Enter your name" />
   <button onclick="generateCode()">Generate Code</button>

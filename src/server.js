@@ -79,7 +79,6 @@ app.get('/privacy-policy', (req, res) => {
               alert('Please enter your name');
               return;
             }
-            const code = Math.random().toString(36).substring(2, 8).toUpperCase();
             
             try {
               const response = await fetch('/api/privacy-code', {
@@ -87,15 +86,16 @@ app.get('/privacy-policy', (req, res) => {
                 headers: {
                   'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ name, code })
+                body: JSON.stringify({ name })
               });
               
               if (!response.ok) {
                 throw new Error('Failed to save code');
               }
               
+              const data = await response.json();
               const result = document.getElementById('codeResult');
-              result.innerHTML = \`Your code: <strong>\${code}</strong><br>Show this to Hallvard for your beer!\`;
+              result.innerHTML = \`Your code: <strong>\${data.code}</strong><br>Show this to Hallvard for your beer!\`;
               result.style.display = 'block';
             } catch (error) {
               alert('Failed to save code. Please try again.');
@@ -179,11 +179,13 @@ app.get('/api/privacy-views', (req, res) => {
 
 // Save privacy policy code
 app.post('/api/privacy-code', (req, res) => {
-  const { name, code } = req.body;
+  const { name } = req.body;
   
-  if (!name || !code) {
-    return res.status(400).json({ error: 'Name and code are required' });
+  if (!name) {
+    return res.status(400).json({ error: 'Name is required' });
   }
+  
+  const code = 'CAT' + Math.random().toString(36).substring(2, 8).toUpperCase();
   
   privacyPolicyCodes.set(code, {
     name,
@@ -191,7 +193,7 @@ app.post('/api/privacy-code', (req, res) => {
     ...req.voterData
   });
   
-  res.json({ success: true, message: 'Code saved successfully' });
+  res.json({ success: true, message: 'Code saved successfully', code });
 });
 
 // Get privacy policy codes (for demo purposes)
