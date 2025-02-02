@@ -11,9 +11,10 @@
 .nav-container {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    justify-content: space-between;
+    padding: 0 1rem;
+    margin-top: -0.5rem;
+    margin-bottom: 2rem;
 }
 
 .nav-btn {
