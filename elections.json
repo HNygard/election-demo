@@ -3,6 +3,16 @@
         "NDC 2024": {
             "questions": [
                 {
+                    "question": "How do you center a div?",
+                    "options": [
+                        "display: flex; justify-content: center;",
+                        "margin: 0 auto;",
+                        "position: absolute; left: 50%;",
+                        "Sacrifice a goat to the CSS gods",
+                        "Just use tables like it's 1999"
+                    ]
+                },
+                {
                     "question": "What's the best programming language in the World",
                     "options": [
                         "C#",
@@ -11,6 +21,156 @@
                         "Python",
                         "PHP",
                         "I only prompt"
+                    ]
+                },
+                {
+                    "question": "Tabs or Spaces?",
+                    "options": [
+                        "Tabs - One character, one purpose",
+                        "Spaces - Consistent across all editors",
+                        "Mixed - Let chaos reign",
+                        "I let my IDE decide"
+                    ]
+                },
+                {
+                    "question": "Most overhyped tech trend?",
+                    "options": [
+                        "Web3/Blockchain",
+                        "AI/ML",
+                        "Microservices",
+                        "Low-code/No-code",
+                        "Serverless",
+                        "Metaverse"
+                    ]
+                },
+                {
+                    "question": "Best Git workflow?",
+                    "options": [
+                        "Git Flow (with develop branch)",
+                        "GitHub Flow (trunk-based)",
+                        "GitLab Flow",
+                        "Just push to main YOLO",
+                        "I use SVN"
+                    ]
+                },
+                {
+                    "question": "Vim or Emacs?",
+                    "options": [
+                        "Vim - The One True Editor",
+                        "Emacs - OS with a decent editor",
+                        "VSCode - Why even debate this?",
+                        "Notepad - Keep it simple",
+                        "I write code on paper first"
+                    ]
+                },
+                {
+                    "question": "How do you fix printer issues?",
+                    "options": [
+                        "Turn it off and on again",
+                        "Perform ancient ritual dance",
+                        "Sacrifice a USB stick to the tech gods",
+                        "Print to PDF instead",
+                        "Call the most junior developer"
+                    ]
+                },
+                {
+                    "question": "Best way to exit Vim?",
+                    "options": [
+                        ":q!",
+                        "Pull the power cord",
+                        "rm -rf /",
+                        "Buy a new computer",
+                        "Still stuck in Vim since 2003"
+                    ]
+                },
+                {
+                    "question": "How many monitors do you need?",
+                    "options": [
+                        "Just one - I'm a minimalist",
+                        "Three - For maximum productivity",
+                        "Five - I'm basically in the Matrix",
+                        "All of them. Every. Single. One.",
+                        "I code by sense of smell"
+                    ]
+                },
+                {
+                    "question": "Best rubber duck debugging companion?",
+                    "options": [
+                        "Classic yellow rubber duck",
+                        "Darth Vader action figure",
+                        "Plush Tux penguin",
+                        "My cat (who judges my code)",
+                        "My coffee mug (it's always there)"
+                    ]
+                },
+                {
+                    "question": "Preferred method of time estimation?",
+                    "options": [
+                        "Fibonacci sequence",
+                        "Roll 3d6 + DEX modifier",
+                        "Multiply by π and round up",
+                        "That's next sprint's problem",
+                        "'It should be quick'"
+                    ]
+                },
+                {
+                    "question": "What's your preferred password?",
+                    "options": [
+                        "correct horse battery staple",
+                        "hunter2",
+                        "admin123",
+                        "Guest",
+                        "My birthday but l33t speak"
+                    ]
+                },
+                {
+                    "question": "How do you deal with legacy code?",
+                    "options": [
+                        "Rewrite it all in Rust",
+                        "Add more comments (// TODO: Fix this)",
+                        "Wrap it in AI/ML and call it innovative",
+                        "Declare technical debt bankruptcy",
+                        "That's future me's problem"
+                    ]
+                },
+                {
+                    "question": "Best way to name variables?",
+                    "options": [
+                        "Hungarian notation forever",
+                        "Single letters (i, j, k, x, y, z)",
+                        "data_data_final_v2_FINAL",
+                        "thingDoer, stuffMaker, objectHandler",
+                        "Lorem ipsum generator"
+                    ]
+                },
+                {
+                    "question": "What powers your code?",
+                    "options": [
+                        "Coffee (black like my terminal)",
+                        "Energy drinks (now in IV form)",
+                        "Pure spite and Stack Overflow",
+                        "The souls of deprecated APIs",
+                        "printf debugging"
+                    ]
+                },
+                {
+                    "question": "Favorite HTTP status code?",
+                    "options": [
+                        "418 - I'm a teapot",
+                        "404 - Not found (like my bugs)",
+                        "200 - OK (rare but beautiful)",
+                        "500 - It works on my machine",
+                        "302 - Found (but moved)"
+                    ]
+                },
+                {
+                    "question": "Best way to solve merge conflicts?",
+                    "options": [
+                        "git push -f origin main",
+                        "Delete the repo and start over",
+                        "Copy to USB, delete local, re-clone",
+                        "Let the intern handle it",
+                        ":wq and hope for the best"
                     ]
                 }
             ]
