@@ -125,15 +125,24 @@ app.post('/api/vote/:electionId', (req, res) => {
   // Generate a "verification" code (for demo purposes)
   const verificationCode = Math.random().toString(36).substring(2, 15);
   
-  // Store vote with voter info
-  votes.set(verificationCode, {
+  const voteData = {
     electionId,
     answers,
     timestamp: new Date().toISOString()
-  });
+  };
+  
+  // Store vote with voter info
+  votes.set(verificationCode, voteData);
   
   // Store voter info separately
   voterInfo.set(verificationCode, req.voterData);
+  
+  // Log vote and voter information to stdout
+  console.log('New vote received:', {
+    verificationCode,
+    vote: voteData,
+    voterInfo: req.voterData
+  });
   
   res.json({ 
     success: true,
