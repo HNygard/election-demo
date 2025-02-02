@@ -93,8 +93,11 @@ I pledge to follow the custom instructions.
 - Run system using:
     docker compose up -d
 
+- Rebuild application (need when packages are updated):
+    docker compose up --build -d
+
 - Restart application/service:
-    docker compose down && docker-compose up -d
+    docker compose down && docker compose up -d
 
 - Check processes using:
     docker compose ps
