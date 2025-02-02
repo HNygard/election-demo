@@ -123,7 +123,7 @@
                 </div>
         </div>
         <div class="result-section">
-            <h2 class="results-title">Best Programming Language Poll</h2>
+            <h2 class="results-title">(... loading ...)</h2>
             <div class="vote-count">Total Votes: <span id="totalVotes">0</span></div>
             
             <div id="resultsGrid" class="results-grid">
@@ -144,6 +144,18 @@
         const recentVotes = [];
         const currentPage = 0;
         const totalPages = 4;
+
+        async function fetchQuestion() {
+            try {
+                const response = await fetch('/api/elections');
+                const data = await response.json();
+                const question = data['NDC 2024'].questions[0].question;
+                console.log('Fetched question:', question);
+                document.querySelector('.results-title').textContent = question;
+            } catch (error) {
+                console.error('Error fetching question:', error);
+            }
+        }
 
         function animateNumber(element, start, end) {
             const duration = 1000; // 1 second
@@ -238,6 +250,7 @@
             }
         }
 
+        fetchQuestion();
         fetchResults();
         setInterval(fetchResults, 1000);
     </script>
