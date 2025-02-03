@@ -9,6 +9,7 @@
 <body>
     <div class="container">
         <h1>Election</h1>
+        <h2 id="election-name-heading"></h2>
         <div id="election-container">Loading election...</div>
         <div class="privacy-notice">
             By participating, you accept the <a href="/privacy-policy">privacy policy</a>.
@@ -25,6 +26,8 @@
                 // For demo, use first election
                 const electionId = Object.keys(elections)[0];
                 const election = elections[electionId];
+
+                document.getElementById('election-name-heading').innerHTML = electionId;
                 
                 const container = document.getElementById('election-container');
                 
