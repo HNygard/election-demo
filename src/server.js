@@ -32,7 +32,7 @@ let votingInterval;
 function startVotingSimulation() {
   if (votingStarted) return;
   votingStarted = true;
-  
+
   // Initial batch of votes (smaller)
   const { votes: initialVotes, voterInfo: initialInfo } = generateMockVotes(30);
   initialVotes.forEach((value, key) => votes.set(key, value));

@@ -60,9 +60,9 @@ const voteOptions = [
 const voteOptions = []
 
 
-elections[election_settings.current_election].questions.forEach((q, qIndex) => {
+elections[election_settings.current_election].questions[0].options.forEach((answer) => {
   voteOptions.push(
-    { option: q.question, weight: 15 },
+    { option: answer, weight: 15 },
   )
 });
 
