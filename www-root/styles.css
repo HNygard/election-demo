@@ -1,10 +1,14 @@
 :root {
-    --primary-color: #2c3e50;
+    --primary-color: #6f9bc8;
+    --secondary-color:  #5e83a8;
     --accent-color: #3498db;
-    --background-color: #f8f9fa;
-    --text-color: #2c3e50;
+    --background-color: #001c39;
+    --text-color: #ffffff;
     --border-radius: 8px;
     --spacing-unit: 1rem;
+
+    --button-background-color:  #5e83a8;
+    --button-text-color: white;
 }
 
 /* Navigation styles */
@@ -56,7 +60,7 @@ body {
     max-width: 800px;
     margin: 0 auto;
     padding: calc(var(--spacing-unit) * 2);
-    background-color: white;
+    background-color: rgb(0, 0, 0);
     border-radius: var(--border-radius);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -70,6 +74,16 @@ body {
     padding: calc(var(--spacing-unit) * 1.5);
     margin-bottom: calc(var(--spacing-unit) * 2);
     text-align: center;
+}
+.info-section {
+    margin-top: 0;
+    margin-right: 0px;
+    margin-bottom: 2rem;
+    margin-left: 0px;
+    padding: 2rem;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .info-section .message {
@@ -95,7 +109,7 @@ h1 {
 h2 {
     text-align: center;
     line-height: 1em;
-    color: #444;
+    color: var(--secondary-color);
 }
 
 #election-form {
@@ -107,7 +121,7 @@ h2 {
     display: block;
     font-size: 1.5rem;
     margin-bottom: calc(var(--spacing-unit) * 2);
-    color: var(--primary-color);
+    color: white;
 }
 
 .options-container {
@@ -118,8 +132,8 @@ h2 {
 }
 
 input[type="submit"] {
-    background-color: white;
-    color: var(--primary-color);
+    background-color: var(--button-background-color);
+    color: var(--button-text-color);
     border: 2px solid var(--accent-color);
     border-radius: var(--border-radius);
     padding: 0.8em 1.5em;
@@ -172,4 +186,13 @@ input[type="submit"]:active {
         width: 100%;
         margin: 0.5em 0;
     }
+}
+
+
+.result-section {
+    margin: 2rem 0;
+    padding: 2rem;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

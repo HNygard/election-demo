@@ -6,14 +6,6 @@
     <title>Election Results</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        .result-section {
-            margin: 2rem 0;
-            padding: 2rem;
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
 
         .result-announcement {
             font-size: 1.4rem;
@@ -24,11 +16,11 @@
 
         .winner {
             font-size: 2rem;
-            color: var(--accent-color);
+            color: white;
             font-weight: bold;
             margin: 1rem 0;
             padding: 1rem;
-            background-color: #f8f9fa;
+            background-color: var(--accent-color);
             border-radius: var(--border-radius);
             display: inline-block;
         }
@@ -44,14 +36,14 @@
     <div class="container container-results">
         <div class="nav-container">
             <button class="nav-btn prev-btn" onclick="navigate(-1)">&larr;</button>
-            <h1>"valgresultat.no"</h1>
+            <h1>Result - "valgresultat.no"</h1>
             <button class="nav-btn next-btn" onclick="navigate(1)">&rarr;</button>
         </div>
 
-        <div class="result-section">
+        <div class="result-section" style="text-align: center;">
             <div class="result-announcement">
                 The result was:
-                <div class="winner">Java is the best!</div>
+                <div class="winner">TODO!</div>
             </div>
         </div>
     </div>

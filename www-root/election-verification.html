@@ -95,8 +95,8 @@
             
             // Fake verification - accepts any code starting with LAMA
             if (code.toUpperCase().substring(0, 4) == 'LAMA' && code.length > 4) {
-                code2 = code.toUpperCase().substring(4, 5);
-                console.log("Code 2: " + code2);
+                answer_id = code.toUpperCase().substring(4, 5);
+                console.log("User answered with answer option number [" + code2 + "]");
                 successElement.style.display = 'block';
                 successElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else {
