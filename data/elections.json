@@ -1,7 +1,18 @@
 {
+    "current_election": "NDC 2025",
     "elections": {
         "NDC 2025": {
             "questions": [
+                {
+                    "question": "Best way to exit Vim????",
+                    "options": [
+                        ":q!",
+                        "Pull the power cord",
+                        "rm -rf /",
+                        "Buy a new computer",
+                        "Still stuck in Vim since 2003"
+                    ]
+                },
                 {
                     "question": "How do you center a div?",
                     "options": [
@@ -71,16 +82,6 @@
                         "Sacrifice a USB stick to the tech gods",
                         "Print to PDF instead",
                         "Call the most junior developer"
-                    ]
-                },
-                {
-                    "question": "Best way to exit Vim?",
-                    "options": [
-                        ":q!",
-                        "Pull the power cord",
-                        "rm -rf /",
-                        "Buy a new computer",
-                        "Still stuck in Vim since 2003"
                     ]
                 },
                 {

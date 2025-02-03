@@ -6,7 +6,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load elections configuration
-const elections = JSON.parse(readFileSync(path.join(__dirname, '../elections.json'), 'utf8')).elections;
+const election_settings = JSON.parse(readFileSync(path.join(__dirname, '../data/elections.json'), 'utf8'));
+const elections = election_settings.elections;
 
 const countries = {
   'NO': { weight: 30, language: 'nb-NO', isps: ['Telenor ASA', 'Telia Norge AS', 'Ice Norge AS'] },
@@ -46,6 +47,7 @@ const browsers = [
   }
 ];
 
+/*
 const voteOptions = [
   { option: 'C#', weight: 20 },
   { option: 'Java', weight: 15 },
@@ -53,7 +55,16 @@ const voteOptions = [
   { option: 'Python', weight: 20 },
   { option: 'PHP', weight: 15 },
   { option: 'I only prompt', weight: 5 }
-];
+]; */
+
+const voteOptions = []
+
+
+elections[election_settings.current_election].questions.forEach((q, qIndex) => {
+  voteOptions.push(
+    { option: q.question, weight: 15 },
+  )
+});
 
 function weightedRandom(items) {
   const totalWeight = items.reduce((sum, item) => sum + item.weight, 0);
@@ -110,7 +121,7 @@ function generateMockVotes(count) {
     
     // Generate vote data
     const voteData = {
-      electionId: 'NDC 2024',
+      electionId: election_settings.current_election,
       answers: { '0': vote.option },
       timestamp
     };

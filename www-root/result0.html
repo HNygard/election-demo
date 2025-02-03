@@ -174,7 +174,7 @@
             try {
                 const response = await fetch('/api/elections');
                 const data = await response.json();
-                const question = data['NDC 2024'].questions[0].question;
+                const question = data['NDC 2025'].questions[0].question;
                 console.log('Fetched question:', question);
                 document.querySelector('.results-title').textContent = question;
             } catch (error) {
@@ -267,7 +267,7 @@
 
         async function fetchResults() {
             try {
-                const response = await fetch('/api/results/NDC%202024');
+                const response = await fetch('/api/results/NDC 2025');
                 const results = await response.json();
                 updateResults(results);
             } catch (error) {

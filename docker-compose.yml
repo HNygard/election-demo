@@ -6,7 +6,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./elections.json:/app/elections.json:ro
+      - ./data/:/app/data
       - ./www-root:/app/www-root:ro
       - ./privacy-policy.md:/app/privacy-policy.md:ro
     environment:

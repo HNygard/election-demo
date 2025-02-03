@@ -17,7 +17,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Load elections configuration
-const elections = JSON.parse(readFileSync(path.join(__dirname, '../elections.json'), 'utf8')).elections;
+const elections = JSON.parse(readFileSync(path.join(__dirname, '../data/elections.json'), 'utf8')).elections;
 
 // In-memory storage
 const votes = new Map();
