@@ -31,6 +31,9 @@
                 // Create form for each question
                 const form = document.createElement('form');
                 form.id = 'election-form';
+
+                // Hack to just use one question
+                election.questions = [election.questions[0]];
                 
                 election.questions.forEach((q, qIndex) => {
                     const questionDiv = document.createElement('div');
