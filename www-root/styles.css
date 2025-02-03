@@ -60,6 +60,9 @@ body {
     border-radius: var(--border-radius);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+.container.container-results {
+    max-width: 100%;
+}
 
 .info-section {
     background-color: var(--background-color);

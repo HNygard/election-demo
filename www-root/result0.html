@@ -111,19 +111,31 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container container-results">
         <div class="nav-container" style="margin-bottom: 0;">
             <button class="nav-btn prev-btn" onclick="navigate(-1)">&larr;</button>
-            <h1>Electronic voting</h1>
+            <h1>Online electronic voting</h1>
             <button class="nav-btn next-btn" onclick="navigate(1)">&rarr;</button>
         </div>
              
         <div class="info-section">
-            <div class="message">Go to this URL and cast your vote:</div>
-            <div id="url-display">(... loading ...)</div>
-            <img id="qr-code" 
-                alt="QR Code for election site"
-                style="display: block; margin: 20px auto; width: 200px;">
+            <!-- Lol. We have TABLES!! -->
+            <table style="width: 100%;">
+                <tr>
+                    <td>
+                        <div class="message">Go to this URL and cast your vote:</div>
+                        <div id="url-display">(... loading ...)</div>
+                    </td>
+
+                    <td>
+
+                        <img id="qr-code" 
+                        alt="QR Code for election site"
+                        style="display: block; margin: 0px auto; width: 200px;">
+                    </td>
+                </tr>
+
+            </table>
             <script>
                 // Load QR code
                 fetch('/api/qr-code')
@@ -135,8 +147,8 @@
                     .catch(error => console.error('Error loading QR code:', error));
             </script>
         </div>
-        <div class="result-section">
-            <h2 class="results-title">(... loading ...)</h2>
+        <div class="result-section" style="margin-top: 0; padding-top: 0;">
+            <h2 class="results-title" style="margin-top: 0;">(... loading ...)</h2>
             <div class="vote-count">Total Votes: <span id="totalVotes">0</span></div>
             
             <div id="resultsGrid" class="results-grid">
