@@ -55,6 +55,11 @@
             display: none;
         }
 
+        #election-ok h2, #election-failed h2 {
+            text-align: left;
+            margin-bottom: 1em;;
+        }
+
         #election-ok {
             background-color: #e8f8f5;
             border: 2px solid #2ecc71;
@@ -70,7 +75,7 @@
         .vote-result {
             margin: 1.5rem 0;
             padding: 1.5rem;
-            background-color: #f8f9fa;
+            background-color: #323232;
             border-radius: var(--border-radius);
             font-weight: bold;
         }
@@ -96,7 +101,7 @@
             // Fake verification - accepts any code starting with LAMA
             if (code.toUpperCase().substring(0, 4) == 'LAMA' && code.length > 4) {
                 answer_id = code.toUpperCase().substring(4, 5);
-                console.log("User answered with answer option number [" + code2 + "]");
+                console.log("User answered with answer option number [" + answer_id + "]");
                 successElement.style.display = 'block';
                 successElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else {
@@ -123,19 +128,19 @@
         </form>
 
         <div id="election-ok">
-            <h2>Success! ✅</h2>
-            Your vote was part of the election.
+            <h2>✅ Success!</h2>
+            Your vote was part of the count.
             <div class="vote-result">
                 You voted for: XYZ
             </div>
             <div class="description">
-                Your vote was signed with 4096 bit encryptions. Totally secure and nobody can
-                see what you voted for. I promise. Just like every politician promise!
+                Your vote was signed with 4096 bitz encryptions. Totally secure and nobody can
+                see what you voted for. I promise. Just like every politician promises!
             </div>
         </div>
 
         <div id="election-failed">
-            <h2>Error! ❌</h2>
+            <h2>❌ Error!</h2>
             Verification code not part of the election. Raise your hand if you want to complain.
         </div>
     </div>
