@@ -92,6 +92,11 @@ body {
     margin-bottom: var(--spacing-unit);
 }
 
+.message {
+    color: var(--text-color);
+    margin: var(--spacing-unit) 0;
+}
+
 .info-section #url-display {
     font-size: 1.1rem;
     color: var(--accent-color);
