@@ -122,3 +122,48 @@ DO NOT read or modify:
 -   Never commit sensitive files
 -   Use environment variables for secrets
 -   Keep credentials out of logs and output
+
+## API Documentation
+
+The server runs on `http://localhost:3000` with:
+- API endpoints at `http://localhost:3000/api/*`
+- Static files served from `www-root/` directory at root URL
+- Privacy policy served at `/privacy-policy`
+
+All endpoints are available without authentication.
+
+### Election Management
+- GET `/api/elections`
+  - Returns all available elections and their questions/options
+- GET `/api/qr-code`
+  - Returns QR code data URL for election website
+
+### Voting
+- POST `/api/vote/:electionId`
+  - Submit a vote for a specific election
+  - Body: `{ "answers": { "questionIndex": "selectedOption" } }`
+  - Returns: `{ "success": true, "verificationCode": "string" }`
+
+### Results & Data Access
+- GET `/api/results/:electionId`
+  - Returns vote counts for each option in the election
+- GET `/api/voter-info`
+  - Returns detailed information about all voters (IP, browser, location)
+- GET `/api/privacy-views`
+  - Returns data about privacy policy page views
+- GET `/api/privacy-codes`
+  - Returns all generated privacy policy acceptance codes
+- GET `/api/simulation/status`
+  - Returns current voting simulation status
+  - Shows total votes and target vote count
+
+### System Control
+- POST `/api/reset`
+  - Clears all votes and voter data
+  - Restarts vote simulation
+- POST `/api/privacy-code`
+  - Generates a new privacy policy acceptance code
+  - Body: `{ "name": "string" }`
+  - Returns: `{ "success": true, "code": "string" }`
+
+Note: All endpoints are intentionally unsecured to demonstrate vulnerabilities in online voting systems. Rate limiting is set to 5 requests per 15 minutes per IP.
