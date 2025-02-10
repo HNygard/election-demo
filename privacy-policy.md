@@ -1,5 +1,3 @@
-
-
 # Privacy policy - Hallvard Election
 
 By participating in this election some personal data about you will be handled by the service. They will temporarily be stored in memory of the application and only the results displayed in the presentation will be saved after that.
@@ -10,6 +8,7 @@ By participating in this election some personal data about you will be handled b
 - Browser information (user agent, language setting)
 - Voting data
 - You read the privacy policy
+- Login information (username, session ID)
 
 ## Who is the data controller?
 
@@ -21,10 +20,9 @@ So not really covered by GDPR as this is a private individual.
 
 Demonstrate security aspects in election systems. Use of the application will be part of a talk done by the data collector.
 
-
 ## Your rights
 
-### Right to access infrmation
+### Right to access information
 
 You have the right to access the information about you that the system is handling. Since the data is not stored to permanent storage, it will likely be deleted before the request is even seen.
 
@@ -32,7 +30,7 @@ Contact Data Protection Officer at election-demo-app@hnygard.no.
 
 ### Rectification
 
-If your are are wrong, you have the right to get it fixed. Contact Data Protection Officer for that.
+If your data is wrong, you have the right to get it fixed. Contact Data Protection Officer for that.
 
 ### Deletion
 

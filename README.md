@@ -53,7 +53,7 @@ The backend is built with Express.js and includes several intentionally transpar
   - Language preferences
   - Geographic location (via GeoIP)
   - Timestamps
-- No authentication required for voting
+- Authentication required for voting
 - Public API endpoints for:
   - Submitting votes
   - Viewing election results

@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 import { marked } from 'marked';
 import { generateMockVotes } from './mockData.js';
 import { url } from 'inspector';
+import { login, authenticate } from './auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -168,8 +169,11 @@ app.get('/api/elections', (req, res) => {
   res.json(elections);
 });
 
+// User login
+app.post('/api/login', login);
+
 // Submit a vote
-app.post('/api/vote/:electionId', (req, res) => {
+app.post('/api/vote/:electionId', authenticate, (req, res) => {
   const { electionId } = req.params;
   const { answers } = req.body;
   
