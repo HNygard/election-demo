@@ -65,3 +65,23 @@ The backend is built with Express.js and includes several intentionally transpar
 ## Disclaimer
 
 This application intentionally contains vulnerabilities for educational purposes. Do not use any code from this project in production systems or real election applications.
+
+## Deployment
+
+To set up the deployment environment variables and secrets for GitHub Actions, follow these steps:
+
+1. Go to your GitHub repository and click on `Settings`.
+2. In the left sidebar, click on `Secrets` and then `Actions`.
+3. Click on the `New repository secret` button to add the following secrets:
+   - `SSH_HOST`: The hostname or IP address of your server.
+   - `SSH_USER`: The SSH username to connect to your server.
+   - `SSH_KEY`: The private SSH key to authenticate with your server.
+   - `SSH_PORT`: The SSH port (default is 22, but change if your server uses a different port).
+
+Once these secrets are set up, the GitHub Actions workflow will use them to deploy the application to your server.
+
+### Server
+
+Setup a compute note in GCP/Azure/AWS with SSH.
+
+Connect to Cloudflare for domain handling.
