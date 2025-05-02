@@ -84,4 +84,16 @@ Once these secrets are set up, the GitHub Actions workflow will use them to depl
 
 Setup a compute node in GCP/Azure/AWS with SSH.
 
+```
+sudo apt install git docker docker-compose
+
+sudo usermod -aG docker $USER
+newgrp docker
+
+sudo git clone https://github.com/HNygard/election-demo.git /opt/election-demo
+sudo chown -R $(id -u):$(id -g) /opt/election-demo/
+cd /opt/election-demo/
+docker-compose up
+```
+
 Connect to Cloudflare for domain handling.
