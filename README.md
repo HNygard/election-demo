@@ -82,6 +82,6 @@ Once these secrets are set up, the GitHub Actions workflow will use them to depl
 
 ### Server
 
-Setup a compute note in GCP/Azure/AWS with SSH.
+Setup a compute node in GCP/Azure/AWS with SSH.
 
 Connect to Cloudflare for domain handling.
