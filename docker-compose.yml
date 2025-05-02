@@ -28,10 +28,6 @@ services:
       - "0.0.0.0:${PORT:-8443}:443"
     command: >
       sh -c "echo '
-        https://:443 {
-          reverse_proxy backend:3000
-          tls internal
-        }
         https://election.hnygard.no {
           reverse_proxy backend:3000
           tls internal
