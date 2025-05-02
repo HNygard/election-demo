@@ -22,12 +22,14 @@ services:
       start_period: 10s
   caddy:
     image: caddy:2
+    depends_on:
+      - backend
     ports:
       - "0.0.0.0:${PORT:-8443}:443"
     command: >
       sh -c "echo '
-        https://localhost:3000 {
-          reverse_proxy http://election.hnygard.no
+        https://localhost {
+          reverse_proxy backend:3000
           tls internal
         }
       ' > /etc/caddy/Caddyfile && caddy run --config /etc/caddy/Caddyfile --adapter caddyfile"
