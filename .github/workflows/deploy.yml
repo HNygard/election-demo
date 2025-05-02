@@ -26,7 +26,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /path/to/your/project
+            cd /opt/election-demo
             git pull origin main
             docker-compose down
             docker-compose up -d --build
