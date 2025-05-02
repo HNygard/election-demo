@@ -4,7 +4,7 @@ services:
   backend:
     build: .
     ports:
-      - "0.0.0.0:${PORT:-3000}:3000"
+      - "3000:3000"
     volumes:
       - ./data/:/app/data
       - ./www-root:/app/www-root:ro
@@ -20,3 +20,14 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+  caddy:
+    image: caddy:2
+    ports:
+      - "0.0.0.0:${PORT:-8443}:443"
+    command: >
+      sh -c "echo '
+        https://localhost:3000 {
+          reverse_proxy http://election.hnygard.no
+          tls internal
+        }
+      ' > /etc/caddy/Caddyfile && caddy run --config /etc/caddy/Caddyfile --adapter caddyfile"
