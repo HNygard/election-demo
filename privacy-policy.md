@@ -4,18 +4,14 @@
 
 By participating in this election some personal data about you will be handled by the service. They will temporarily be stored in memory of the application. If the application restarts, no data will be kept in the application.
 
-During the presentation some data will be displayed: Summary of the results and a list of recent votes. This data will be saved outside the application (e.g. recording of the presentation). Journalisme.
+During the presentation some data will be displayed: Summary of the results and a list of recent votes. This data will be saved outside the application (e.g. recording of the presentation) for journalism.
 
 ## Data
 
 - IP address and information about ISP for that IP
 - Browser information (user agent, language setting)
 - Voting data
-- You read the privacy policy or not
-
-Parts of the information will be displayed in 
-
-Summary of the data is displayed 
+- You opened the privacy policy, or not
 
 ## Who is the data controller?
 
