@@ -185,6 +185,15 @@ app.get('/privacy-policy', (req, res) => {
           color: #333;
           word-break: break-word;
         }
+        @keyframes highlight-blink {
+          0%   { background-color: #ffff99; }
+          50%  { background-color: #fff; }
+          100% { background-color: #f1f1f1; }
+        }
+        
+        #codeResult.blink {
+          animation: highlight-blink 1s ease;
+        }
         </style>
         <div class="container">
           ${content}
@@ -214,6 +223,9 @@ app.get('/privacy-policy', (req, res) => {
               const result = document.getElementById('codeResult');
               result.innerHTML = \`Your code: <strong>\${data.code}</strong><br>Show this to Hallvard for your beer!\`;
               result.style.display = 'block';
+              
+              // Scroll smoothly to the result box
+              result.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch (error) {
               alert('Failed to save code. Please try again.');
             }
