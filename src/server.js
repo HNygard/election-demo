@@ -124,6 +124,17 @@ app.get('/privacy-policy', (req, res) => {
         <link rel="stylesheet" href="styles.css">
       </head>
       <body>
+        <style>
+        h2 {
+          text-center: left;
+        }
+        p {
+          margin: 1em;
+        }
+        ul {
+          margin: 1em;
+        }
+        </style>
         <div class="container">
           ${content}
         </div>
