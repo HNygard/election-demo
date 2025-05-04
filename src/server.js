@@ -122,6 +122,7 @@ app.get('/privacy-policy', (req, res) => {
       <head>
         <title>Privacy Policy</title>
         <link rel="stylesheet" href="styles.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
       </head>
       <body>
         <style>
