@@ -226,6 +226,11 @@ app.get('/privacy-policy', (req, res) => {
               
               // Scroll smoothly to the result box
               result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          
+              // Trigger blink animation
+              result.classList.remove('blink'); // Reset if already applied
+              void result.offsetWidth;          // Force reflow to restart animation
+              result.classList.add('blink');
             } catch (error) {
               alert('Failed to save code. Please try again.');
             }
