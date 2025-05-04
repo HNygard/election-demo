@@ -2,20 +2,24 @@
 
 # Privacy policy - Hallvard Election
 
-By participating in this election some personal data about you will be handled by the service. They will temporarily be stored in memory of the application and only the results displayed in the presentation will be saved after that.
+By participating in this election some personal data about you will be handled by the service. They will temporarily be stored in memory of the application. If the application restarts, no data will be kept in the application.
+
+During the presentation some data will be displayed: Summary of the results and a list of recent votes. This data will be saved outside the application (e.g. recording of the presentation). Journalisme.
 
 ## Data
 
 - IP address and information about ISP for that IP
 - Browser information (user agent, language setting)
 - Voting data
-- You read the privacy policy
+- You read the privacy policy or not
+
+Parts of the information will be displayed in 
+
+Summary of the data is displayed 
 
 ## Who is the data controller?
 
 Hallvard Nygård.
-
-So not really covered by GDPR as this is a private individual.
 
 ## Purpose
 
@@ -24,7 +28,7 @@ Demonstrate security aspects in election systems. Use of the application will be
 
 ## Your rights
 
-### Right to access infrmation
+### Right to access information
 
 You have the right to access the information about you that the system is handling. Since the data is not stored to permanent storage, it will likely be deleted before the request is even seen.
 
