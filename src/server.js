@@ -126,13 +126,63 @@ app.get('/privacy-policy', (req, res) => {
       <body>
         <style>
         h2 {
-          text-center: left;
+          text-align: left;
         }
         p {
           margin: 1em;
         }
         ul {
           margin: 1em;
+        }
+
+        #beerForm {
+          max-width: 400px;
+          padding: 1.5rem;
+          border-radius: 12px;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        #nameInput {
+          width: 100%;
+          padding: 0.75rem;
+          font-size: 1rem;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          box-sizing: border-box;
+          margin-bottom: 1rem;
+          transition: border-color 0.3s;
+        }
+        
+        #nameInput:focus {
+          border-color: #4a90e2;
+          outline: none;
+        }
+        
+        #beerForm button {
+          width: 100%;
+          padding: 0.75rem;
+          background-color: #4a90e2;
+          color: white;
+          font-size: 1rem;
+          font-weight: bold;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+        }
+        
+        #beerForm button:hover {
+          background-color: #357ab8;
+        }
+        
+        #codeResult {
+          background-color: #f1f1f1;
+          padding: 1rem;
+          border-radius: 8px;
+          font-family: monospace;
+          font-size: 0.9rem;
+          color: #333;
+          word-break: break-word;
         }
         </style>
         <div class="container">
