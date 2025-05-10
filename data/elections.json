@@ -4,6 +4,16 @@
         "NDC 2025": {
             "questions": [
                 {
+                    "question": "Should all mobile platforms be forced to support open standards equally?",
+                    "options": [
+                        "Yes, by law",
+                        "Yes, with exceptions",
+                        "Neutral",
+                        "No, platforms should decide",
+                        "No, limits innovation"
+                    ]
+                },
+                {
                     "question": "Best way to exit Vim????",
                     "options": [
                         ":q!",
