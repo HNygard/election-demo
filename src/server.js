@@ -198,6 +198,11 @@ app.get('/privacy-policy', (req, res) => {
         <div class="container">
           ${content}
         </div>
+        <div id="beerForm">
+            <input type="text" id="nameInput" placeholder="Enter your name" />
+            <button onclick="generateCode()">Generate Code</button>
+            <div id="codeResult" style="margin-top: 1rem; display: none;"></div>
+        </div>
         <script>
           async function generateCode() {
             const name = document.getElementById('nameInput').value;
