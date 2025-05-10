@@ -348,8 +348,13 @@ app.get('/api/voter-info', (req, res) => {
 
 // Get privacy policy views (for demo purposes)
 app.get('/api/privacy-views', (req, res) => {
-  const views = Array.from(privacyPolicyViews.values());
-  res.json(views);
+  var privacyViews = {
+    totalViews: privacyPolicyViews.size,
+    totalSubmits: privacyPolicyCodes.size,
+    views: Array.from(privacyPolicyViews.values()),
+    codes: Array.from(privacyPolicyCodes.values())
+  }
+  res.json(privacyViews);
 });
 
 // Save privacy policy code
