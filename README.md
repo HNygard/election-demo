@@ -67,6 +67,9 @@ The backend is built with Express.js and includes several intentionally transpar
 
 This application intentionally contains vulnerabilities for educational purposes. Do not use any code from this project in production systems or real election applications.
 
+## Development
+See .clinerules
+
 ## Deployment
 
 To set up the deployment environment variables and secrets for GitHub Actions, follow these steps:
