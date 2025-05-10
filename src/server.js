@@ -197,14 +197,45 @@ app.get('/privacy-policy', (req, res) => {
         </style>
         <div class="container">
           ${content}
-        </div>
-        <div id="beerForm">
-            <input type="text" id="nameInput" placeholder="Enter your name" />
-            <button onclick="generateCode()">Generate Code</button>
-            <div id="codeResult" style="margin-top: 1rem; display: none;"></div>
+          <div id="beerForm">
+              <input type="text" id="nameInput" placeholder="Enter your name" />
+              <button onclick="generateCode()">Generate Code</button>
+              <div id="codeResult" style="margin-top: 1rem; display: none;"></div>
+          </div>
         </div>
         <script>
+          // Check if code has already been generated on page load
+          document.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('privacyCodeGenerated')) {
+              const savedCode = sessionStorage.getItem('privacyCode');
+              if (savedCode) {
+                displayCode(savedCode);
+              }
+            }
+          });
+          
+          // Function to display the code
+          function displayCode(code) {
+            const result = document.getElementById('codeResult');
+            result.innerHTML = \`Your code: <strong>\${code}</strong><br>Show this to Hallvard for your beer!\`;
+            result.style.display = 'block';
+            
+            // Scroll smoothly to the result box
+            result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+            // Trigger blink animation
+            result.classList.remove('blink'); // Reset if already applied
+            void result.offsetWidth;          // Force reflow to restart animation
+            result.classList.add('blink');
+          }
+          
           async function generateCode() {
+            // Check if code has already been generated
+            if (sessionStorage.getItem('privacyCodeGenerated')) {
+              alert('You have already generated a code. You can only generate one code per session.');
+              return;
+            }
+            
             const name = document.getElementById('nameInput').value;
             if (!name) {
               alert('Please enter your name');
@@ -225,17 +256,13 @@ app.get('/privacy-policy', (req, res) => {
               }
               
               const data = await response.json();
-              const result = document.getElementById('codeResult');
-              result.innerHTML = \`Your code: <strong>\${data.code}</strong><br>Show this to Hallvard for your beer!\`;
-              result.style.display = 'block';
               
-              // Scroll smoothly to the result box
-              result.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          
-              // Trigger blink animation
-              result.classList.remove('blink'); // Reset if already applied
-              void result.offsetWidth;          // Force reflow to restart animation
-              result.classList.add('blink');
+              // Save to session storage to prevent multiple submissions
+              sessionStorage.setItem('privacyCodeGenerated', 'true');
+              sessionStorage.setItem('privacyCode', data.code);
+              
+              // Display the code
+              displayCode(data.code);
             } catch (error) {
               alert('Failed to save code. Please try again.');
             }
