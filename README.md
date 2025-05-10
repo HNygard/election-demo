@@ -10,7 +10,8 @@ This application is connected to my talk on election security. I don't think it 
 
 ## 🚨 Important Notice
 
-This is a demonstration tool only. It should NOT be used for actual elections or voting purposes. The vulnerabilities shown are intentional for educational purposes.
+This is a demonstration tool only.
+It should NOT be used for actual elections or voting purposes. The vulnerabilities shown are intentional for educational purposes.
 
 ## (TODO) Security Concerns Demonstrated
 
