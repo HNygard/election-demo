@@ -29,12 +29,11 @@
     <div class="container container-results">
         <div class="nav-container">
             <button class="nav-btn prev-btn" onclick="navigate(-1)">&larr;</button>
-            <h1>"valgresultat.no"</h1>
+            <h1>Privacy policy</h1>
             <button class="nav-btn next-btn" onclick="navigate(1)">&rarr;</button>
         </div>
 
         <div class="result-section" style="text-align: center;">
-            <h2 class="results-subtitle">Actual results! Promise!</h2>
             <div id="privacyStats" class="results-subtitle" style="margin-top: 2rem;">
                 Loading privacy policy views...
             </div>
@@ -44,11 +43,12 @@
             // Fetch privacy policy views
             fetch('/api/privacy-views')
                 .then(response => response.json())
-                .then(views => {
+                .then(response => {
                     const stats = document.getElementById('privacyStats');
                     stats.innerHTML = `
-                        Number of privacy policy readers: ${views.length}<br>
-                        <small>(They actually read it!)</small>
+                        Opened privacy policy: ${response.totalViews}<br>
+                        <br>
+                        Actually read it: ${response.totalSubmits}<br>
                     `;
                 })
                 .catch(error => {
