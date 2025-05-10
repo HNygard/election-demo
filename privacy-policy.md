@@ -43,23 +43,3 @@ All data will be deleted when the service restarts. If you want to be deleted an
 You have the right to get a copy of your data. This is possible if it's not already deleted (see section about deletion). Contact Data Protection Officer.
 
 Still here? I owe you a beer. Max 3 per election/talk...
-
-<div id="beerForm">
-  <input type="text" id="nameInput" placeholder="Enter your name" />
-  <button onclick="generateCode()">Generate Code</button>
-  <div id="codeResult" style="margin-top: 1rem; display: none;"></div>
-</div>
-
-<script>
-function generateCode() {
-  const name = document.getElementById('nameInput').value;
-  if (!name) {
-    alert('Please enter your name');
-    return;
-  }
-  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-  const result = document.getElementById('codeResult');
-  result.innerHTML = `Your code: <strong>${code}</strong><br>Show this to Hallvard for your beer!`;
-  result.style.display = 'block';
-}
-</script>
