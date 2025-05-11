@@ -99,11 +99,11 @@
                 if (result.success) {
                     // Check if the vote was from an iPhone
                     if (result.isIphone) {
-                        // For iPhone users, sleep for 25 seconds and then show a 404 error
+                        // For iPhone users, sleep for 10 seconds and then show a 404 error
                         console.log("iPhone detected, delaying response...");
                         setTimeout(() => {
                             alert('404 not found');
-                        }, 25000); // 25 seconds
+                        }, 10000);
                     } else {
                         // For non-iPhone users, redirect to finish page with verification code
                         window.location.href = `./election-finish.html?code=${result.verificationCode}`;
