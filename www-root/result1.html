@@ -6,23 +6,6 @@
     <title>Election Results</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        .result-announcement {
-            font-size: 1.4rem;
-            color: var(--text-color);
-            margin: 2rem 0;
-            line-height: 1.6;
-        }
-
-        .winner {
-            font-size: 2rem;
-            color: white;
-            font-weight: bold;
-            margin: 1rem 0;
-            padding: 1rem;
-            background-color: var(--accent-color);
-            border-radius: var(--border-radius);
-            display: inline-block;
-        }
 
         .results-title {
             color: var(--primary-color);
@@ -114,12 +97,15 @@
         </div>
 
         <div class="result-section" style="text-align: center;">
-            <div class="vote-count">Total Votes: <span id="totalVotes">0</span></div>
-            
             <div class="result-announcement">
-                Election winner 🎉<br>
-                <div id="winnerDisplay" class="winner">Loading...</div>
+                <div class="winner-container">
+                    Election winner:
+                    <div  class="winner">
+                        🎉 <span id="winnerDisplay">Loading...</span> 🎉
+                    </div>
+                </div>
             </div>
+            <div class="vote-count" style="margin: 0">Total Votes: <span id="totalVotes">0</span></div>
             
             <div id="resultsGrid" class="results-grid">
                 <!-- Results will be populated here -->

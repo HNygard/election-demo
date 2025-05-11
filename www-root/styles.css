@@ -207,3 +207,62 @@ input[type="submit"]:active {
     border-radius: var(--border-radius);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+/* Results display styling */
+#resultsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+}
+
+.result-item {
+    padding: 0.5rem 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    transition: background-color 0.3s ease;
+}
+
+.result-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.table-row {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+.table-row .language {
+    width: 50%;
+    font-weight: bold;
+}
+
+.table-row .percentage {
+    margin-right: 0.5rem;
+    color: var(--accent-color);
+}
+
+.table-row .votes {
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+
+
+.result-announcement {
+    font-size: 1.4rem;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.winner {
+    font-size: 2rem;
+    color: white;
+    font-weight: bold;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: var(--accent-color);
+    border-radius: var(--border-radius);
+    display: inline-block;
+}

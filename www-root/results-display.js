@@ -74,13 +74,7 @@ function updateResults(results, containerId = 'resultsGrid', showRecentVotes = t
             resultItem = document.createElement('div');
             resultItem.id = `result-${language}`;
             resultItem.className = 'result-item';
-            resultItem.innerHTML = `
-                <div class="language">${language}</div>
-                <div>
-                    <div class="percentage">-</div>
-                    <div class="votes">-</div>
-                </div>
-            `;
+            resultItem.innerHTML = `<div class="table-row"><span class="language">${language}</span> <span class="percentage">-</span>,&nbsp;<span class="votes">-</span></div>`;
             resultsGrid.appendChild(resultItem);
         }
 
@@ -88,6 +82,9 @@ function updateResults(results, containerId = 'resultsGrid', showRecentVotes = t
             const votesElement = resultItem.querySelector('.votes');
             const previousVotes = previousResults[0][language];
             animateNumber(votesElement, previousVotes, votes);
+            setTimeout(() => {
+                votesElement.textContent = votes + " votes";
+            }, 1000);
         } else {
             resultItem.querySelector('.votes').textContent = votes + " votes";
         }
