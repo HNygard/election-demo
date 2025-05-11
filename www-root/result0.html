@@ -134,8 +134,8 @@
                     .catch(error => console.error('Error loading QR code:', error));
             </script>
         </div>
-        <div class="result-section" style="margin-top: 0; padding-top: 0;">
-            <h2 class="results-title" style="margin-top: 0;">(... loading ...)</h2>
+        <div class="result-section" style="margin-top: 0;">
+            <h2 class="results-title">(... loading ...)</h2>
             <div class="vote-count">Total Votes: <span id="totalVotes">0</span></div>
             
             <div id="resultsGrid" class="results-grid">
@@ -151,122 +151,17 @@
         </div>
     </div>
 
+    <script src="results-display.js"></script>
     <script>
-        let previousResults = null;
-        const recentVotes = [];
         const currentPage = 0;
         const totalPages = 4;
-
-        async function fetchQuestion() {
-            try {
-                const response = await fetch('/api/elections');
-                const data = await response.json();
-                const question = data['NDC 2025'].questions[0].question;
-                console.log('Fetched question:', question);
-                document.querySelector('.results-title').textContent = question;
-            } catch (error) {
-                console.error('Error fetching question:', error);
-            }
-        }
-
-        function animateNumber(element, start, end) {
-            const duration = 1000; // 1 second
-            const startTime = performance.now();
-            
-            function update(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-
-                const current = Math.round(start + (end - start) * progress);
-                element.textContent = current;
-
-                if (progress < 1) {
-                    requestAnimationFrame(update);
-                }
-            }
-
-            requestAnimationFrame(update);
-        }
-
-        function updateResults(results) {
-            const totalVotes = Object.values(results[0]).reduce((a, b) => a + b, 0);
-            document.getElementById('totalVotes').textContent = totalVotes;
-
-            const resultsGrid = document.getElementById('resultsGrid');
-            const languages = Object.keys(results[0]);
-
-            languages.forEach(language => {
-                const votes = results[0][language];
-                const percentage = ((votes / totalVotes) * 100).toFixed(1);
-                
-                let resultItem = document.getElementById(`result-${language}`);
-                
-                if (!resultItem) {
-                    resultItem = document.createElement('div');
-                    resultItem.id = `result-${language}`;
-                    resultItem.className = 'result-item';
-                    resultItem.innerHTML = `
-                        <div class="language">${language}</div>
-                        <div>
-                            <div class="percentage">-</div>
-                            <div class="votes">-</div>
-                        </div>
-                    `;
-                    resultsGrid.appendChild(resultItem);
-                }
-
-                if (previousResults && previousResults[0][language] !== votes) {
-                    const votesElement = resultItem.querySelector('.votes');
-                    const previousVotes = previousResults[0][language];
-                    animateNumber(votesElement, previousVotes, votes);
-                } else {
-                    resultItem.querySelector('.votes').textContent = votes + " votes";
-                }
-                
-                resultItem.querySelector('.percentage').textContent = `${percentage}%`;
-            });
-
-            if (!previousResults || 
-                Object.values(results[0]).reduce((a, b) => a + b, 0) > 
-                Object.values(previousResults[0]).reduce((a, b) => a + b, 0)) {
-                
-                languages.forEach(language => {
-                    if (!previousResults || results[0][language] > previousResults[0][language]) {
-                        recentVotes.unshift({
-                            language,
-                            timestamp: new Date()
-                        });
-                    }
-                });
-
-                while (recentVotes.length > 5) {
-                    recentVotes.pop();
-                }
-
-                const recentVotesContainer = document.getElementById('recentVotes');
-                recentVotesContainer.innerHTML = recentVotes.map(vote => `
-                    <div class="recent-vote">
-                        Vote for ${vote.language} at ${vote.timestamp.toLocaleTimeString()}
-                    </div>
-                `).join('');
-            }
-
-            previousResults = results;
-        }
-
-        async function fetchResults() {
-            try {
-                const response = await fetch('/api/results/NDC 2025');
-                const results = await response.json();
-                updateResults(results);
-            } catch (error) {
-                console.error('Error fetching results:', error);
-            }
-        }
-
-        fetchQuestion();
-        fetchResults();
-        setInterval(fetchResults, 1000);
+        
+        // Initialize the results display
+        initResultsDisplay({
+            containerId: 'resultsGrid',
+            showRecentVotes: true,
+            pollInterval: 1000
+        });
     </script>
     <script src="navigation.js"></script>
 </body>

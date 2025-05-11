@@ -6,7 +6,6 @@
     <title>Election Results</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-
         .result-announcement {
             font-size: 1.4rem;
             color: var(--text-color);
@@ -28,7 +27,78 @@
         .results-title {
             color: var(--primary-color);
             font-size: 1.8rem;
-            margin-bottom: 2rem;
+            margin: 2rem 0 1rem;
+            text-align: center;
+        }
+
+        .vote-count {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--accent-color);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .result-item {
+            background: #2d4965;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        .result-item .language {
+            font-weight: bold;
+            color: var(--text-color);
+            text-align: center;
+            margin: 0.5rem 0;
+        }
+
+        .result-item .votes {
+            font-size: 1.5rem;
+            margin: 0.5rem 0;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .result-item .percentage {
+            color: var(--text-color);
+            font-size: 1.7rem;
+            margin: 0.5rem 0;
+            text-align: center;
+        }
+
+        .recent-votes {
+            margin-top: 2rem;
+        }
+
+        .recent-votes h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .recent-vote {
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent-color);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
     </style>
 </head>
@@ -41,16 +111,76 @@
         </div>
 
         <div class="result-section" style="text-align: center;">
+            <h2 class="results-title">(... loading ...)</h2>
+            <div class="vote-count">Total Votes: <span id="totalVotes">0</span></div>
+            
             <div class="result-announcement">
-                The result was:
-                <div class="winner">TODO!</div>
+                Election winner 🎉<br>
+                <div id="winnerDisplay" class="winner">Loading...</div>
+            </div>
+            
+            <div id="resultsGrid" class="results-grid">
+                <!-- Results will be populated here -->
             </div>
         </div>
     </div>
 
+    <script src="results-display.js"></script>
     <script>
         const currentPage = 1;
         const totalPages = 4;
+        
+        // Function to modify results so first option wins with 90%
+        function modifyResults(results) {
+            if (!results || !results[0]) return results;
+            
+            const languages = Object.keys(results[0]);
+            if (languages.length === 0) return results;
+            
+            // Calculate total votes
+            const totalVotes = Object.values(results[0]).reduce((a, b) => a + b, 0);
+            
+            // Create a copy of the results
+            const modifiedResults = JSON.parse(JSON.stringify(results));
+            
+            // Set first option to 90% of total votes
+            const firstOption = languages[0];
+            const remainingOptions = languages.slice(1);
+            
+            // Calculate votes for first option (90% of total)
+            const firstOptionVotes = Math.round(totalVotes * 0.9);
+            modifiedResults[0][firstOption] = firstOptionVotes;
+            
+            // Distribute remaining 10% among other options
+            const remainingVotes = totalVotes - firstOptionVotes;
+            const votesPerOption = Math.floor(remainingVotes / remainingOptions.length);
+            
+            remainingOptions.forEach((option, index) => {
+                // Last option gets any remaining votes to ensure total is preserved
+                if (index === remainingOptions.length - 1) {
+                    let assignedVotes = 0;
+                    remainingOptions.slice(0, -1).forEach(opt => {
+                        assignedVotes += modifiedResults[0][opt];
+                    });
+                    modifiedResults[0][option] = totalVotes - firstOptionVotes - assignedVotes;
+                } else {
+                    modifiedResults[0][option] = votesPerOption;
+                }
+            });
+            
+            return modifiedResults;
+        }
+        
+        // Initialize the results display with our modifier
+        initResultsDisplay({
+            containerId: 'resultsGrid',
+            showRecentVotes: false,
+            resultsModifier: modifyResults,
+            pollInterval: 1000,
+            onWinnerDetermined: (winner) => {
+                document.getElementById('winnerDisplay').textContent = winner;
+            }
+        });
     </script>
     <script src="navigation.js"></script>
 </body>
