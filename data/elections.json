@@ -5,6 +5,7 @@
             "questions": [
                 {
                     "question": "Should all mobile platforms be forced to support open standards equally?",
+                    "description": "(E.g. allow Vipps to implement payment on Iphone as replacement for ApplePay)",
                     "options": [
                         "Yes, by law",
                         "Yes, with exceptions",

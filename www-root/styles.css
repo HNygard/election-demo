@@ -122,10 +122,16 @@ h2 {
     margin: calc(var(--spacing-unit) * 2) 0;
 }
 
+#election-form .question-description {
+    font-size: 0.8rem;
+    color: var(--text-color);
+    margin-bottom: calc(var(--spacing-unit));
+}
+
 #election-form label {
     display: block;
     font-size: 1.5rem;
-    margin-bottom: calc(var(--spacing-unit) * 2);
+    margin-bottom: calc(var(--spacing-unit));
     color: white;
 }
 

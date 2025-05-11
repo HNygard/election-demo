@@ -45,7 +45,14 @@
                     const label = document.createElement('label');
                     label.textContent = q.question;
                     questionDiv.appendChild(label);
-                    
+
+                    if (q.description) {
+                        const description = document.createElement('div');
+                        description.className = 'question-description';
+                        description.textContent = q.description;
+                        questionDiv.appendChild(description);
+                    }
+
                     const optionsDiv = document.createElement('div');
                     optionsDiv.className = 'options-container';
                     
