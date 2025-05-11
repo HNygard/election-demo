@@ -41,7 +41,7 @@
         }
 
         .result-item {
-            background: #f8f9fa;
+            background: #2d4965;
             padding: 1rem;
             border-radius: var(--border-radius);
             transition: all 0.3s ease;
@@ -49,18 +49,23 @@
 
         .result-item .language {
             font-weight: bold;
-            color: var(--primary-color);
+            color: var(--text-color);
+            text-align: center;
+            margin: 0.5rem 0;
         }
 
         .result-item .votes {
             font-size: 1.5rem;
             margin: 0.5rem 0;
             transition: all 0.3s ease;
+            text-align: center;
         }
 
         .result-item .percentage {
-            color: var(--accent-color);
-            font-size: 0.9rem;
+            color: var(--text-color);
+            font-size: 1.7rem;
+            margin: 0.5rem 0;
+            text-align: center;
         }
 
         .recent-votes {
@@ -202,8 +207,10 @@
                     resultItem.className = 'result-item';
                     resultItem.innerHTML = `
                         <div class="language">${language}</div>
-                        <div class="votes">0</div>
-                        <div class="percentage">0%</div>
+                        <div>
+                            <div class="percentage">-</div>
+                            <div class="votes">-</div>
+                        </div>
                     `;
                     resultsGrid.appendChild(resultItem);
                 }
@@ -213,7 +220,7 @@
                     const previousVotes = previousResults[0][language];
                     animateNumber(votesElement, previousVotes, votes);
                 } else {
-                    resultItem.querySelector('.votes').textContent = votes;
+                    resultItem.querySelector('.votes').textContent = votes + " votes";
                 }
                 
                 resultItem.querySelector('.percentage').textContent = `${percentage}%`;
