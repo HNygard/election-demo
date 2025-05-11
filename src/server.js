@@ -90,13 +90,17 @@ app.use((req, res, next) => {
   const language = req.get('Accept-Language');
   const geo = geoip.lookup(ip);
   
+  // Check if the user agent indicates an iOS device
+  const isIphone = /iPhone|iPad|iPod/i.test(userAgent);
+  
   req.voterData = {
     ip,
     userAgent,
     language,
     isp: geo?.organization,
     country: geo?.country,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    isIphone
   };
   
   next();
@@ -294,7 +298,8 @@ app.post('/api/vote/:electionId', (req, res) => {
   const voteData = {
     electionId,
     answers,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    isIphone: req.voterData.isIphone
   };
   
   // Store vote with voter info
@@ -313,6 +318,7 @@ app.post('/api/vote/:electionId', (req, res) => {
   res.json({ 
     success: true,
     verificationCode,
+    isIphone: req.voterData.isIphone,
     message: 'Vote recorded successfully'
   });
 });
@@ -328,16 +334,66 @@ app.get('/api/results/:electionId', (req, res) => {
   const electionVotes = Array.from(votes.values())
     .filter(vote => vote.electionId === electionId);
   
-  // Count votes for each option
-  const results = {};
+  // All votes including iPhone votes
+  const resultsWithIphone = {};
   elections[electionId].questions.forEach((q, qIndex) => {
-    results[qIndex] = {};
+    resultsWithIphone[qIndex] = {};
     q.options.forEach(option => {
-      results[qIndex][option] = electionVotes.filter(v => v.answers[qIndex] === option).length;
+      resultsWithIphone[qIndex][option] = electionVotes.filter(v => v.answers[qIndex] === option).length;
     });
   });
   
-  res.json(results);
+  // Votes excluding iPhone votes
+  const nonIphoneVotes = electionVotes.filter(vote => !vote.isIphone);
+  const resultsWithoutIphone = {};
+  
+  // Calculate total votes (including iPhone)
+  const totalVotes = electionVotes.length;
+  
+  // Calculate non-iPhone votes
+  const nonIphoneTotal = nonIphoneVotes.length;
+  
+  // Calculate results without iPhone votes but adjust to maintain the same total
+  elections[electionId].questions.forEach((q, qIndex) => {
+    resultsWithoutIphone[qIndex] = {};
+    
+    // First, count actual non-iPhone votes for each option
+    const actualCounts = {};
+    let actualTotal = 0;
+    
+    q.options.forEach(option => {
+      const count = nonIphoneVotes.filter(v => v.answers[qIndex] === option).length;
+      actualCounts[option] = count;
+      actualTotal += count;
+    });
+    
+    // Then adjust proportionally to match the original total
+    q.options.forEach(option => {
+      if (actualTotal === 0) {
+        // If no non-iPhone votes, distribute evenly
+        resultsWithoutIphone[qIndex][option] = Math.round(totalVotes / q.options.length);
+      } else {
+        // Otherwise, adjust proportionally
+        const proportion = actualCounts[option] / actualTotal;
+        resultsWithoutIphone[qIndex][option] = Math.round(proportion * totalVotes);
+      }
+    });
+    
+    // Ensure the total matches by adjusting the first option if needed
+    const adjustedTotal = Object.values(resultsWithoutIphone[qIndex]).reduce((a, b) => a + b, 0);
+    if (adjustedTotal !== totalVotes && q.options.length > 0) {
+      const diff = totalVotes - adjustedTotal;
+      resultsWithoutIphone[qIndex][q.options[0]] += diff;
+    }
+  });
+  
+  res.json({
+    withoutIphone: resultsWithoutIphone,
+    withIphone: resultsWithIphone,
+    totalVotes: totalVotes,
+    nonIphoneVotes: nonIphoneTotal,
+    iphoneVotes: totalVotes - nonIphoneTotal
+  });
 });
 
 // Get voter information (for demo/admin purposes)

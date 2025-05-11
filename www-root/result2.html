@@ -93,6 +93,36 @@
                 transform: translateX(0);
             }
         }
+
+        /* In result2.html, show both sets of results but style the without-iPhone results */
+        .without-iphone {
+            text-decoration: line-through;
+            opacity: 0.8;
+        }
+        
+        /* Style for result data containers */
+        .result-data {
+            display: inline-block;
+            margin: 0.5rem 0;
+        }
+        
+        /* Add some spacing between the two result sets */
+        .result-data.without-iphone {
+            margin-right: 1rem;
+        }
+        
+        /* Add a label before each result set */
+        .result-data.without-iphone::before {
+            content: "Without iPhone: ";
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .result-data.with-iphone::before {
+            content: "With iPhone: ";
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -101,23 +131,25 @@
             <button class="nav-btn prev-btn" onclick="navigate(-1)">&larr;</button>
             <div>
                 <h1>Result aka valgresultat.no</h1>
-                <h2>Now including Iphone</h2>
+                <h2>Now including iPhone</h2>
                 <h2 class="results-title" style="margin-top: 2rem; display: none;">(... loading ...)</h2>
             </div>
             <button class="nav-btn next-btn" onclick="navigate(1)">&rarr;</button>
         </div>
 
         <div class="result-section" style="text-align: center;">
-            
             <div class="result-announcement">
                 <div class="winner-container">
                     Election winner:
-                    <div  class="winner">
+                    <div class="winner">
                         🎉 <span id="winnerDisplay">Loading...</span> 🎉
                     </div>
                 </div>
             </div>
-            <div class="vote-count" style="margin: 0">Total Votes: <span id="totalVotes">0</span></div>
+            <div class="vote-count" style="margin: 0">
+                <span>Total Votes: <span id="totalVotesWithIphone">0</span></span>
+                <span class="with-iphone"> (<span id="totalVotesIphone">0</span> iPhone)</span>
+            </div>
             
             <div id="resultsGrid" class="results-grid">
                 <!-- Results will be populated here -->
@@ -137,11 +169,15 @@
         const currentPage = 2;
         const totalPages = 4;
         
-        // Initialize the results display with real results
+        // Initialize the results display with both sets of results
         initResultsDisplay({
             containerId: 'resultsGrid',
             showRecentVotes: true,
-            pollInterval: 1000
+            pollInterval: 1000,
+            showBothResults: true,
+            onWinnerDetermined: (winner) => {
+                document.getElementById('winnerDisplay').textContent = winner;
+            }
         });
     </script>
     <script src="navigation.js"></script>

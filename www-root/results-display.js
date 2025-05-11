@@ -2,7 +2,8 @@
  * Results display functionality for election demo
  */
 
-let previousResults = null;
+let previousResultsWithIphone = null;
+let previousResultsWithoutIphone = null;
 const recentVotes = [];
 
 /**
@@ -48,12 +49,12 @@ async function fetchQuestion(elementSelector = '.results-title') {
 
 /**
  * Updates the results display with the provided data
- * @param {Object} results - The results data from the API
+ * @param {Object} resultsWithoutIphone - The results data from the API
  * @param {string} containerId - ID of the container element for results
  * @param {boolean} showRecentVotes - Whether to show recent votes section
  */
-function updateResults(results, containerId = 'resultsGrid', showRecentVotes = true) {
-    const totalVotes = Object.values(results[0]).reduce((a, b) => a + b, 0);
+function updateResults(resultsWithoutIphone, resultsWithIphone, containerId = 'resultsGrid', showRecentVotes = true) {
+    const totalVotes = Object.values(resultsWithoutIphone[0]).reduce((a, b) => a + b, 0);
     const totalVotesElement = document.getElementById('totalVotes');
     if (totalVotesElement) {
         totalVotesElement.textContent = totalVotes;
@@ -62,11 +63,15 @@ function updateResults(results, containerId = 'resultsGrid', showRecentVotes = t
     const resultsGrid = document.getElementById(containerId);
     if (!resultsGrid) return;
     
-    const languages = Object.keys(results[0]);
+    const languages = Object.keys(resultsWithoutIphone[0]);
 
     languages.forEach(language => {
-        const votes = results[0][language];
+        const votes = resultsWithoutIphone[0][language];
         const percentage = ((votes / totalVotes) * 100).toFixed(1);
+        
+        const withIphoneTotalVotes = Object.values(resultsWithIphone[0]).reduce((a, b) => a + b, 0);
+        const withIphoneVotes = resultsWithIphone[0][language];
+        const withIphonePercentage = ((withIphoneVotes / withIphoneTotalVotes) * 100).toFixed(1);
         
         let resultItem = document.getElementById(`result-${language}`);
         
@@ -74,30 +79,56 @@ function updateResults(results, containerId = 'resultsGrid', showRecentVotes = t
             resultItem = document.createElement('div');
             resultItem.id = `result-${language}`;
             resultItem.className = 'result-item';
-            resultItem.innerHTML = `<div class="table-row"><span class="language">${language}</span> <span class="percentage">-</span>,&nbsp;<span class="votes">-</span></div>`;
+            resultItem.innerHTML = `
+                <div class="table-row">
+                    <span class="language">${language}</span>
+                    <div>
+                        <div class="result-data without-iphone">
+                            <span class="percentage without-iphone">-</span>&nbsp;<span class="votes without-iphone">-</span>
+                        </div>
+                        <div class="result-data with-iphone">
+                            <span class="percentage with-iphone">-</span>&nbsp;<span class="votes with-iphone">-</span>
+                        </div>
+                    </div>
+                </div>`;
             resultsGrid.appendChild(resultItem);
         }
 
-        if (previousResults && previousResults[0][language] !== votes) {
-            const votesElement = resultItem.querySelector('.votes');
-            const previousVotes = previousResults[0][language];
+        // Update without-iPhone values
+        if (previousResultsWithoutIphone && previousResultsWithoutIphone[0][language] !== votes) {
+            const votesElement = resultItem.querySelector('.votes.without-iphone');
+            const previousVotes = previousResultsWithoutIphone[0][language] || 0;
             animateNumber(votesElement, previousVotes, votes);
             setTimeout(() => {
                 votesElement.textContent = votes + " votes";
             }, 1000);
         } else {
-            resultItem.querySelector('.votes').textContent = votes + " votes";
+            resultItem.querySelector('.votes.without-iphone').textContent = votes + " votes";
         }
         
-        resultItem.querySelector('.percentage').textContent = `${percentage}%`;
+        resultItem.querySelector('.percentage.without-iphone').textContent = `${percentage}%`;
+        
+        // Update with-iPhone values
+        if (previousResultsWithIphone && previousResultsWithIphone[0][language] !== withIphoneVotes) {
+            const votesElement = resultItem.querySelector('.votes.with-iphone');
+            const previousVotes = previousResultsWithIphone[0][language] || 0;
+            animateNumber(votesElement, previousVotes, withIphoneVotes);
+            setTimeout(() => {
+                votesElement.textContent = withIphoneVotes + " votes";
+            }, 1000);
+        } else {
+            resultItem.querySelector('.votes.with-iphone').textContent = withIphoneVotes + " votes";
+        }
+        
+        resultItem.querySelector('.percentage.with-iphone').textContent = `${withIphonePercentage}%`;
     });
 
-    if (showRecentVotes && (!previousResults || 
-        Object.values(results[0]).reduce((a, b) => a + b, 0) > 
-        Object.values(previousResults[0]).reduce((a, b) => a + b, 0))) {
+    if (showRecentVotes && (!previousResultsWithIphone || 
+        Object.values(resultsWithoutIphone[0]).reduce((a, b) => a + b, 0) > 
+        Object.values(previousResultsWithIphone[0]).reduce((a, b) => a + b, 0))) {
         
         languages.forEach(language => {
-            if (!previousResults || results[0][language] > previousResults[0][language]) {
+            if (!previousResultsWithIphone || resultsWithoutIphone[0][language] > previousResultsWithIphone[0][language]) {
                 recentVotes.unshift({
                     language,
                     timestamp: new Date()
@@ -134,7 +165,8 @@ function updateResults(results, containerId = 'resultsGrid', showRecentVotes = t
         }
     }
 
-    previousResults = results;
+    previousResultsWithoutIphone = resultsWithoutIphone;
+    previousResultsWithIphone = resultsWithIphone;
 }
 
 /**
@@ -142,23 +174,38 @@ function updateResults(results, containerId = 'resultsGrid', showRecentVotes = t
  * @param {string} containerId - ID of the container element for results
  * @param {boolean} showRecentVotes - Whether to show recent votes section
  * @param {Function} resultsModifier - Optional function to modify results before display
+ * @param {boolean} showBothResults - Whether to show both with and without iPhone results
  */
-async function fetchResults(containerId = 'resultsGrid', showRecentVotes = true, resultsModifier = null) {
+async function fetchResults(containerId = 'resultsGrid', showRecentVotes = true, resultsModifier = null, showBothResults = false) {
     try {
         const response = await fetch('/api/results/NDC 2025');
-        let results = await response.json();
+        let data = await response.json();
         
-        // Apply custom modifications to results if provided
+        // Update the total votes display
+        const totalVotesElementWithout = document.getElementById('totalVotesIphone');
+        totalVotesElementWithout.textContent = data.iphoneVotes;
+
+        const totalVotesElementWith = document.getElementById('totalVotesWithIphone');
+        totalVotesElementWith.textContent = data.totalVotes;
+        
+        // New format with both withIphone and withoutIphone results
+        let withoutIphoneResults = data.withoutIphone;
+        let withIphoneResults = data.withIphone;
+        
+        // Apply custom modifications if provided
         if (resultsModifier && typeof resultsModifier === 'function') {
-            results = resultsModifier(results);
+            // The modifier might expect the old format, so we pass withoutIphone by default
+            withoutIphoneResults = resultsModifier(data.withoutIphone);
+            // We don't modify withIphoneResults
         }
         
-        updateResults(results, containerId, showRecentVotes);
+        updateResults(withoutIphoneResults, withIphoneResults, containerId, showRecentVotes);
         
-        // Return the winner (highest votes)
-        if (results && results[0]) {
-            const languages = Object.keys(results[0]);
-            const winner = languages.reduce((a, b) => results[0][a] > results[0][b] ? a : b);
+        // Return the winner (highest votes) from withIphoneResults or withoutIphoneResults based on showBothResults
+        const resultsToUse = showBothResults ? withIphoneResults : withoutIphoneResults;
+        if (resultsToUse && resultsToUse[0]) {
+            const languages = Object.keys(resultsToUse[0]);
+            const winner = languages.reduce((a, b) => resultsToUse[0][a] > resultsToUse[0][b] ? a : b);
             return winner;
         }
     } catch (error) {
@@ -175,6 +222,7 @@ async function fetchResults(containerId = 'resultsGrid', showRecentVotes = true,
  * @param {Function} options.resultsModifier - Optional function to modify results before display
  * @param {number} options.pollInterval - Polling interval in milliseconds
  * @param {Function} options.onWinnerDetermined - Callback when winner is determined
+ * @param {boolean} options.showBothResults - Whether to show both with and without iPhone results
  */
 function initResultsDisplay(options = {}) {
     const {
@@ -183,7 +231,8 @@ function initResultsDisplay(options = {}) {
         resultsModifier = null,
         pollInterval = 1000,
         onWinnerDetermined = null,
-        questionSelector = '.results-title'
+        questionSelector = '.results-title',
+        showBothResults = false
     } = options;
     
     if (questionSelector) {
@@ -191,7 +240,7 @@ function initResultsDisplay(options = {}) {
     }
     
     // Initial fetch
-    fetchResults(containerId, showRecentVotes, resultsModifier).then(winner => {
+    fetchResults(containerId, showRecentVotes, resultsModifier, showBothResults).then(winner => {
         if (onWinnerDetermined && winner) {
             onWinnerDetermined(winner);
         }
@@ -200,7 +249,7 @@ function initResultsDisplay(options = {}) {
     // Set up polling
     if (pollInterval > 0) {
         setInterval(() => {
-            fetchResults(containerId, showRecentVotes, resultsModifier).then(winner => {
+            fetchResults(containerId, showRecentVotes, resultsModifier, showBothResults).then(winner => {
                 if (onWinnerDetermined && winner) {
                     onWinnerDetermined(winner);
                 }

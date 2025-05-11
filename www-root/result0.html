@@ -33,6 +33,10 @@
             color: var(--accent-color);
         }
 
+        .without-iphone {
+            display: none;
+        }
+
         .results-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -136,7 +140,10 @@
         </div>
         <div class="result-section" style="margin-top: 0;">
             <h2 class="results-title">(... loading ...)</h2>
-            <div class="vote-count">Total Votes: <span id="totalVotes">0</span></div>
+            <div class="vote-count" style="margin: 0">
+                <span>Total Votes: <span id="totalVotesWithIphone">0</span></span>
+                <span class="with-iphone"> (<span id="totalVotesIphone">0</span> iPhone)</span>
+            </div>
             
             <div id="resultsGrid" class="results-grid" style="display: none">
                 <!-- Results will be populated here -->

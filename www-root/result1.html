@@ -6,12 +6,22 @@
     <title>Election Results</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-
         .results-title {
             color: var(--primary-color);
             font-size: 1.8rem;
             margin: 2rem 0 1rem;
             text-align: center;
+        }
+
+        .results-subtitle {
+            color: var(--accent-color);
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            display: inline-block;
+            border: 2px solid var(--accent-color);
         }
 
         .vote-count {
@@ -83,6 +93,17 @@
                 transform: translateX(0);
             }
         }
+
+        /* In result1.html, hide the with-iPhone results */
+        .with-iphone, .result-data.with-iphone {
+            display: none;
+        }
+        
+        /* Style for result data containers */
+        .result-data {
+            display: inline-block;
+            margin: 0.5rem 0;
+        }
     </style>
 </head>
 <body>
@@ -100,15 +121,25 @@
             <div class="result-announcement">
                 <div class="winner-container">
                     Election winner:
-                    <div  class="winner">
+                    <div class="winner">
                         🎉 <span id="winnerDisplay">Loading...</span> 🎉
                     </div>
                 </div>
             </div>
-            <div class="vote-count" style="margin: 0">Total Votes: <span id="totalVotes">0</span></div>
+            <div class="vote-count" style="margin: 0">
+                <span>Total Votes: <span id="totalVotesWithIphone">0</span></span>
+                <span class="with-iphone"> (<span id="totalVotesIphone">0</span> iPhone)</span>
+            </div>
             
             <div id="resultsGrid" class="results-grid">
                 <!-- Results will be populated here -->
+            </div>
+
+            <div class="recent-votes">
+                <h3>Recent Votes</h3>
+                <div id="recentVotes">
+                    <!-- Recent votes will be populated here -->
+                </div>
             </div>
         </div>
     </div>
@@ -118,52 +149,10 @@
         const currentPage = 1;
         const totalPages = 4;
         
-        // Function to modify results so first option wins with 90%
-        function modifyResults(results) {
-            if (!results || !results[0]) return results;
-            
-            const languages = Object.keys(results[0]);
-            if (languages.length === 0) return results;
-            
-            // Calculate total votes
-            const totalVotes = Object.values(results[0]).reduce((a, b) => a + b, 0);
-            
-            // Create a copy of the results
-            const modifiedResults = JSON.parse(JSON.stringify(results));
-            
-            // Set first option to 90% of total votes
-            const firstOption = languages[0];
-            const remainingOptions = languages.slice(1);
-            
-            // Calculate votes for first option (90% of total)
-            const firstOptionVotes = Math.round(totalVotes * 0.9);
-            modifiedResults[0][firstOption] = firstOptionVotes;
-            
-            // Distribute remaining 10% among other options
-            const remainingVotes = totalVotes - firstOptionVotes;
-            const votesPerOption = Math.floor(remainingVotes / remainingOptions.length);
-            
-            remainingOptions.forEach((option, index) => {
-                // Last option gets any remaining votes to ensure total is preserved
-                if (index === remainingOptions.length - 1) {
-                    let assignedVotes = 0;
-                    remainingOptions.slice(0, -1).forEach(opt => {
-                        assignedVotes += modifiedResults[0][opt];
-                    });
-                    modifiedResults[0][option] = totalVotes - firstOptionVotes - assignedVotes;
-                } else {
-                    modifiedResults[0][option] = votesPerOption;
-                }
-            });
-            
-            return modifiedResults;
-        }
-        
-        // Initialize the results display with our modifier
+        // Initialize the results display with our modifier to use non-iPhone results
         initResultsDisplay({
             containerId: 'resultsGrid',
-            showRecentVotes: false,
-            resultsModifier: modifyResults,
+            showRecentVotes: true,
             pollInterval: 1000,
             onWinnerDetermined: (winner) => {
                 document.getElementById('winnerDisplay').textContent = winner;

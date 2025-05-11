@@ -119,21 +119,39 @@ function generateMockVotes(count) {
     
     const verificationCode = Math.random().toString(36).substring(2, 15);
     
+    // Randomly determine if this vote is from an iPhone (about 20% chance)
+    const isIphone = Math.random() < 0.2;
+    
+    // Generate user agent - if isIphone, use an iPhone user agent
+    let userAgent;
+    if (isIphone) {
+      // iPhone user agent examples
+      const iphoneVersions = ['15_6', '16_0', '16_5', '17_0'];
+      const safariVersions = ['605.1.15', '605.1.15', '605.1.15'];
+      const iosVersion = iphoneVersions[Math.floor(Math.random() * iphoneVersions.length)];
+      const safariVersion = safariVersions[Math.floor(Math.random() * safariVersions.length)];
+      userAgent = `Mozilla/5.0 (iPhone; CPU iPhone OS ${iosVersion} like Mac OS X) AppleWebKit/${safariVersion} (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/${safariVersion}`;
+    } else {
+      userAgent = browser.format(browser.versions[Math.floor(Math.random() * browser.versions.length)]);
+    }
+    
     // Generate vote data
     const voteData = {
       electionId: election_settings.current_election,
       answers: { '0': vote.option },
-      timestamp
+      timestamp,
+      isIphone
     };
 
     // Generate voter info
     const voterInfo = {
       ip: generateIP(country.code),
-      userAgent: browser.format(browser.versions[Math.floor(Math.random() * browser.versions.length)]),
+      userAgent,
       language: `${countryData.language},en;q=0.9`,
       isp: countryData.isps[Math.floor(Math.random() * countryData.isps.length)],
       country: country.code,
-      timestamp
+      timestamp,
+      isIphone
     };
 
     mockVotes.set(verificationCode, voteData);
