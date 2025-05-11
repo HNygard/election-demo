@@ -4,6 +4,19 @@
         "NDC 2025": {
             "questions": [
                 {
+                    "question": "Who should be prime minister of Norway?",
+                    "options": [
+                        "Hallvard Nygård",
+                        "Donald Trump",
+                        "Jonas Gahr Støre",
+                        "Erna Solberg",
+                        "Sylvi Listhaug",
+                        "Trygve Slagsvold Vedum",
+                        "None of the above"
+                    ]
+                },
+                {
+                    "internal_comment": "Could be an actual question/answer, but it's too heavy.",
                     "question": "Should all mobile platforms be forced to support open standards equally?",
                     "description": "(E.g. allow Vipps to implement payment on Iphone as replacement for ApplePay)",
                     "options": [
