@@ -101,9 +101,7 @@
                     if (result.isIphone) {
                         // For iPhone users, sleep for 10 seconds and then show a 404 error
                         console.log("iPhone detected, delaying response...");
-                        setTimeout(() => {
-                            alert('404 not found');
-                        }, 10000);
+                        window.location.href = `./election-finish-iphone.html?code=${result.verificationCode}`;
                     } else {
                         // For non-iPhone users, redirect to finish page with verification code
                         window.location.href = `./election-finish.html?code=${result.verificationCode}`;

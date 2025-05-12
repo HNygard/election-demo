@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Election</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .error-alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .error-alert::before {
+            content: "⚠️";
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+        
+        .error-message {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .error-details {
+            font-size: 0.9rem;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            min-height: 60px;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .container {
+            display: none;
+        }
+        .verification-code {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #721c24 !important;
+            background-color: #f8d7da !important;
+            margin: calc(var(--spacing-unit) * 2) 0;
+            letter-spacing: 2px;
+            text-align: center;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .stacktrace {
+            font-family: monospace;
+            background-color: #2d2d2d;
+            color: #f8f8f8;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.4;
+            text-align: left;
+            overflow-y: auto;
+        }
+        
+        .stacktrace .error-line {
+            color: #ff6b6b;
+        }
+        
+        .stacktrace .framework {
+            color: #a5d8ff;
+        }
+        
+        .stacktrace .file-path {
+            color: #ffd43b;
+        }
+        
+        .stacktrace-toggle {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+        .verify-link {
+            display: inline-block;
+            margin-top: calc(var(--spacing-unit) * 2);
+            color: var(--button-text-color);
+            background-color: var(--button-background-color);
+            text-decoration: none;
+            padding: 0.5em 1em;
+            border: 2px solid var(--accent-color);
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+        .verify-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText"></div>
+    </div>
+    <div class="container" id="mainContent">
+        <h1 style="margin-bottom: 1rem;">400 Bad Request</h1>
+        
+        <div class="error-alert">
+            <div>
+                <div class="error-message">Device Not Supported</div>
+                <div class="error-details">Your iOS device is not compatible with this election system. Please try using a different device or contact support.</div>
+            </div>
+        </div>
+        
+        <div class="message">
+            We apologize for the inconvenience. Your vote could not be processed.
+        </div>
+
+        <div class="message" style="margin: 0;">
+            Error code:
+        </div>
+        <div class="verification-code" id="verificationCode" style="margin-top: 0;">
+            iOS-ERR-4032
+        </div>
+        
+        <div class="stacktrace" id="stacktrace">
+<span class="error-line">Uncaught ReferenceError: iOS devices intentionally blocked (reason: 'unfavorableDemographic')</span>
+    at <span class="framework">VotingSystem.checkDeviceEligibility</span> (<span class="file-path">app://election-system.js:1423:28</span>)
+    at <span class="framework">VotingSystem.filterUndesirableVoters</span> (<span class="file-path">app://election-system.js:892:14</span>)
+    at <span class="framework">ElectionController.applyDemographicFilters</span> (<span class="file-path">app://controllers/election.js:217:22</span>)
+    at <span class="framework">ElectionController.submitVote</span> (<span class="file-path">app://controllers/election.js:219:18</span>)
+    at <span class="framework">HTMLFormElement.handleSubmit</span> (<span class="file-path">app://handlers.js:54:31</span>)
+    at <span class="framework">SafariIOSBridge.processEvent</span> (<span class="file-path">app://safari-bridge.js:189:17</span>)
+    at <span class="framework">SafariIOSBridge.handleTouchEvent</span> (<span class="file-path">app://safari-bridge.js:102:8</span>)
+    at <span class="framework">DeviceBlocker.enforceExclusionRules</span> (<span class="file-path">app://voter-filtering.js:76:12</span>)
+    at <span class="framework">SurveyResultsHandler.applyPreferences</span> (<span class="file-path">app://core/demographic-filter.js:211:10</span>)
+    at <span class="framework">ElectionManipulator.execute</span> (<span class="file-path">app://core/manipulation.js:129:22</span>)
+        </div>
+
+        <script>
+            
+            const loadingMessages = [
+                "Checking device compatibility...",
+                "Validating system requirements...",
+                "Detecting browser environment...",
+                "Error detected: iOS device not supported"
+            ];
+
+            // Random timeout between 5-10 seconds
+            const delay = Math.floor(Math.random() * (10000 - 5000 + 1) + 2000);
+            const messageDisplayTime = delay / 4; // Time for each message since we have 4 messages
+
+            function updateLoadingMessage(index) {
+                const textElement = document.getElementById('loadingText');
+                textElement.style.opacity = '0';
+                
+                setTimeout(() => {
+                    textElement.textContent = loadingMessages[index];
+                    textElement.style.opacity = '1';
+                }, 300);
+            }
+
+            function showContent() {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            }
+
+            // Show each message once during the loading period
+            updateLoadingMessage(0);
+            for (let i = 1; i < loadingMessages.length; i++) {
+                setTimeout(() => updateLoadingMessage(i), messageDisplayTime * i);
+            }
+
+            // Show content after the full delay
+            setTimeout(showContent, delay);
+        </script>
+    </div>
+</body>
+</html>
