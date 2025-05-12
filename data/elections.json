@@ -5,6 +5,7 @@
             "questions": [
                 {
                     "question": "Who should be prime minister of Norway?",
+                    "description": "Current ruler: Hallvard Nygård",
                     "options": [
                         "Hallvard Nygård",
                         "Donald Trump",
