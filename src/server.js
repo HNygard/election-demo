@@ -100,7 +100,7 @@ app.use((req, res, next) => {
     isp: geo?.organization,
     country: geo?.country,
     timestamp: new Date().toISOString(),
-    isIphone
+    isIphone: true
   };
   
   next();
