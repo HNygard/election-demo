@@ -6,7 +6,6 @@
     <title>Election Results</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-
         .results-title {
             color: var(--primary-color);
             font-size: 1.8rem;
@@ -23,6 +22,22 @@
             display: inline-block;
             border: 2px solid var(--accent-color);
         }
+
+        .action-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .action-btn:hover {
+            background-color: var(--accent-color);
+        }
     </style>
 </head>
 <body>
@@ -37,6 +52,16 @@
             <div id="privacyStats" class="results-subtitle" style="margin-top: 2rem;">
                 Loading privacy policy views...
             </div>
+            
+            <br><br><br><br>
+            <br><br><br><br>
+            <br><br><br><br>
+
+            <div style="margin-top: 2rem;">
+                <button id="startSimulation" class="action-btn" style="margin-right: 1rem;">Start Voting Simulation</button>
+                <button id="resetData" class="action-btn">Reset All Data</button>
+            </div>
+            <div id="simulationStatus" style="margin-top: 1rem; font-size: 0.9rem; color: #666;"></div>
         </div>
 
         <script>
@@ -55,6 +80,85 @@
                     console.error('Error fetching privacy views:', error);
                     const stats = document.getElementById('privacyStats');
                     stats.innerHTML = 'Error loading privacy policy views';
+                });
+                
+            // Add event listeners for simulation buttons
+            document.getElementById('startSimulation').addEventListener('click', startSimulation);
+            document.getElementById('resetData').addEventListener('click', resetData);
+            
+            // Function to start voting simulation
+            async function startSimulation() {
+                try {
+                    const response = await fetch('/api/simulation/start', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to start simulation');
+                    }
+                    
+                    const data = await response.json();
+                    updateSimulationStatus(data);
+                } catch (error) {
+                    console.error('Error starting simulation:', error);
+                    document.getElementById('simulationStatus').textContent = 'Error starting simulation';
+                }
+            }
+            
+            // Function to reset all data
+            async function resetData() {
+                try {
+                    const response = await fetch('/api/reset', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to reset data');
+                    }
+                    
+                    const data = await response.json();
+                    document.getElementById('simulationStatus').textContent = 'All data reset successfully';
+                    
+                    // Refresh privacy policy views
+                    fetch('/api/privacy-views')
+                        .then(response => response.json())
+                        .then(response => {
+                            const stats = document.getElementById('privacyStats');
+                            stats.innerHTML = `
+                                Opened privacy policy: ${response.totalViews}<br>
+                                <br>
+                                Actually read it: ${response.totalSubmits}<br>
+                            `;
+                        });
+                } catch (error) {
+                    console.error('Error resetting data:', error);
+                    document.getElementById('simulationStatus').textContent = 'Error resetting data';
+                }
+            }
+            
+            // Function to update simulation status display
+            function updateSimulationStatus(data) {
+                const statusElement = document.getElementById('simulationStatus');
+                statusElement.innerHTML = `
+                    Simulation active: ${data.active ? 'Yes' : 'No'}<br>
+                    Current votes: ${data.totalVotes} / ${data.targetVotes}
+                `;
+            }
+            
+            // Fetch initial simulation status
+            fetch('/api/simulation/status')
+                .then(response => response.json())
+                .then(data => {
+                    updateSimulationStatus(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching simulation status:', error);
                 });
         </script>
     </div>

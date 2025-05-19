@@ -40,6 +40,7 @@ function startVotingSimulation() {
   
   // Add more votes every few seconds
   votingInterval = setInterval(() => {
+    console.log('Adding more votes...');
     // Generate 5-15 votes each interval
     const batchSize = Math.floor(Math.random() * 10) + 5;
     const { votes: newVotes, voterInfo: newInfo } = generateMockVotes(batchSize);
@@ -49,10 +50,12 @@ function startVotingSimulation() {
     
     // Stop after reaching ~150 total votes
     if (votes.size >= 150) {
+      console.log('Simulation completed. Total votes:', votes.size);
+      // Clear the interval
       clearInterval(votingInterval);
       votingStarted = false;
     }
-  }, 10000); // Add votes every 10 seconds
+  }, 1000); // Add votes every 10 seconds
 }
 
 // Serve QR code
@@ -74,7 +77,7 @@ app.get('/api/qr-code', async (req, res) => {
   }
 });
 
-// Start vote simulation on server start
+// Call startVotingSimulation once on server start
 startVotingSimulation();
 
 // Request logging
@@ -82,6 +85,18 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :r
 
 app.use(cors());
 app.use(express.json());
+
+// Endpoint to start voting simulation
+app.post('/api/simulation/start', (req, res) => {
+  startVotingSimulation();
+  res.json({ 
+    success: true, 
+    message: 'Voting simulation started',
+    active: votingStarted,
+    totalVotes: votes.size,
+    targetVotes: 150
+  });
+});
 
 // Middleware to collect user data
 app.use((req, res, next) => {
@@ -460,9 +475,6 @@ app.post('/api/reset', (req, res) => {
     clearInterval(votingInterval);
     votingStarted = false;
   }
-  
-  // Restart voting simulation
-  startVotingSimulation();
   
   res.json({ success: true, message: 'All data cleared and voting simulation restarted' });
 });
