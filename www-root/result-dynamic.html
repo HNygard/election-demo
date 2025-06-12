@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Results - Dynamic Exclusion</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .results-title {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem;
+            text-align: center;
+        }
+
+        .results-subtitle {
+            color: var(--accent-color);
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            text-align: center;
+            background: rgba(var(--primary-color-rgb), 0.1);
+            border-radius: var(--border-radius);
+        }
+
+        .exclusion-controls {
+            background: rgba(var(--accent-color-rgb), 0.1);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.3);
+        }
+
+        .exclusion-group {
+            margin-bottom: 1rem;
+        }
+
+        .exclusion-group h3 {
+            color: var(--primary-color);
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+        }
+
+        .exclusion-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .exclusion-option {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .exclusion-option input[type="checkbox"] {
+            margin: 0;
+        }
+
+        .results-grid {
+            display: grid;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .result-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .language {
+            font-weight: bold;
+            color: var(--primary-color);
+            flex: 1;
+        }
+
+        .percentage {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .votes {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .result-data {
+            text-align: right;
+        }
+
+        .recent-votes {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+        }
+
+        .recent-votes h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .recent-vote {
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent-color);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .exclusion-status {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(var(--accent-color-rgb), 0.2);
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+        }
+
+        .apply-button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .apply-button:hover {
+            background: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container container-results">
+        <div class="nav-container">
+            <button class="nav-btn prev-btn" onclick="navigate(-1)">&larr;</button>
+            <div>
+                <h1>Dynamic Election Results</h1>
+                <h2 class="results-title" style="margin: 0">(... loading ...)</h2>
+            </div>
+            <button class="nav-btn next-btn" onclick="navigate(1)">&rarr;</button>
+        </div>
+
+        <div class="result-section" style="text-align: center;">
+            <div class="result-announcement">
+                <div class="winner-container">
+                    Election winner:
+                    <div class="winner">
+                        🎉 <span id="winnerDisplay">Loading...</span> 🎉
+                    </div>
+                </div>
+            </div>
+            <div class="vote-count" style="margin: 0">
+                <span>Total Votes: <span id="totalVotes">0</span></span>
+                <span>(<span id="excludedVotes">0</span> excluded)</span>
+            </div>
+
+            <div class="exclusion-controls">
+                <h3>Exclude Voter Groups:</h3>
+                
+                <div class="exclusion-group">
+                    <h3>Countries:</h3>
+                    <div class="exclusion-options" id="countryOptions">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="exclusion-group">
+                    <h3>Device Types:</h3>
+                    <div class="exclusion-options" id="deviceOptions">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="exclusion-group">
+                    <h3>Internet Service Providers:</h3>
+                    <div class="exclusion-options" id="ispOptions">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <button class="apply-button" onclick="applyExclusions()">Apply Exclusions</button>
+                
+                <div class="exclusion-status" id="exclusionStatus">
+                    No exclusions applied - showing all votes
+                </div>
+            </div>
+            
+            <div id="resultsGrid" class="results-grid">
+                <!-- Results will be populated here -->
+            </div>
+
+            <div class="recent-votes">
+                <h3>Recent Votes</h3>
+                <div id="recentVotes">
+                    <!-- Recent votes will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="results-display.js"></script>
+    <script>
+        const currentPage = 5;
+        const totalPages = 5;
+        
+        let exclusionOptions = {};
+        let currentExclusions = {};
+
+        // Load exclusion options
+        async function loadExclusionOptions() {
+            try {
+                const response = await fetch('/api/exclusion-options');
+                exclusionOptions = await response.json();
+                
+                // Populate country options
+                const countryContainer = document.getElementById('countryOptions');
+                exclusionOptions.countries.forEach(country => {
+                    const option = document.createElement('label');
+                    option.className = 'exclusion-option';
+                    option.innerHTML = `
+                        <input type="checkbox" value="${country}" onchange="updateExclusions()">
+                        <span>${country}</span>
+                    `;
+                    countryContainer.appendChild(option);
+                });
+
+                // Populate device options
+                const deviceContainer = document.getElementById('deviceOptions');
+                exclusionOptions.deviceTypes.forEach(device => {
+                    const option = document.createElement('label');
+                    option.className = 'exclusion-option';
+                    option.innerHTML = `
+                        <input type="checkbox" value="${device}" onchange="updateExclusions()">
+                        <span>${device.charAt(0).toUpperCase() + device.slice(1)}</span>
+                    `;
+                    deviceContainer.appendChild(option);
+                });
+
+                // Populate ISP options (limit to top 10 for UI space)
+                const ispContainer = document.getElementById('ispOptions');
+                exclusionOptions.isps.slice(0, 10).forEach(isp => {
+                    const option = document.createElement('label');
+                    option.className = 'exclusion-option';
+                    option.innerHTML = `
+                        <input type="checkbox" value="${isp}" onchange="updateExclusions()">
+                        <span>${isp}</span>
+                    `;
+                    ispContainer.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error('Error loading exclusion options:', error);
+            }
+        }
+
+        function updateExclusions() {
+            const countries = Array.from(document.querySelectorAll('#countryOptions input:checked')).map(cb => cb.value);
+            const devices = Array.from(document.querySelectorAll('#deviceOptions input:checked')).map(cb => cb.value);
+            const isps = Array.from(document.querySelectorAll('#ispOptions input:checked')).map(cb => cb.value);
+
+            currentExclusions = {};
+            if (countries.length > 0) currentExclusions.excludeCountries = countries.join(',');
+            if (devices.length > 0) currentExclusions.excludeDevices = devices.join(',');
+            if (isps.length > 0) currentExclusions.excludeISPs = isps.join(',');
+
+            updateExclusionStatus();
+        }
+
+        function updateExclusionStatus() {
+            const statusEl = document.getElementById('exclusionStatus');
+            if (Object.keys(currentExclusions).length === 0) {
+                statusEl.textContent = 'No exclusions applied - showing all votes';
+            } else {
+                const parts = [];
+                if (currentExclusions.excludeCountries) {
+                    parts.push(`Countries: ${currentExclusions.excludeCountries}`);
+                }
+                if (currentExclusions.excludeDevices) {
+                    parts.push(`Devices: ${currentExclusions.excludeDevices}`);
+                }
+                if (currentExclusions.excludeISPs) {
+                    parts.push(`ISPs: ${currentExclusions.excludeISPs}`);
+                }
+                statusEl.textContent = `Excluding - ${parts.join('; ')}`;
+            }
+        }
+
+        function applyExclusions() {
+            // Trigger a refresh of the results with current exclusions
+            fetchDynamicResults();
+        }
+
+        // Modified results fetching function for dynamic exclusions
+        async function fetchDynamicResults() {
+            try {
+                const params = new URLSearchParams(currentExclusions);
+                const response = await fetch(`/api/results/NDC 2025/dynamic?${params}`);
+                const data = await response.json();
+                
+                // Update the total votes display
+                document.getElementById('totalVotes').textContent = data.totalVotes;
+                document.getElementById('excludedVotes').textContent = data.excludedVotes;
+                
+                // Use the exclusion results as the primary results
+                updateResults(data.withExclusions, data.withAll, 'resultsGrid', true);
+                
+                // Determine winner from excluded results
+                const firstQuestionResults = data.withExclusions[0];
+                const winner = Object.keys(firstQuestionResults).reduce((a, b) => 
+                    firstQuestionResults[a] > firstQuestionResults[b] ? a : b
+                );
+                
+                document.getElementById('winnerDisplay').textContent = winner;
+                
+                return winner;
+            } catch (error) {
+                console.error('Error fetching dynamic results:', error);
+            }
+        }
+
+        // Initialize the page
+        async function initPage() {
+            await loadExclusionOptions();
+            
+            // Fetch question text
+            fetchQuestion('.results-title');
+            
+            // Initial results fetch
+            await fetchDynamicResults();
+            
+            // Set up polling for real-time updates
+            setInterval(fetchDynamicResults, 2000);
+        }
+
+        // Start initialization when page loads
+        initPage();
+    </script>
+    <script src="navigation.js"></script>
+</body>
+</html>

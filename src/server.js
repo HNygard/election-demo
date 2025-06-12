@@ -338,7 +338,141 @@ app.post('/api/vote/:electionId', (req, res) => {
   });
 });
 
-// Get election results (for demo/admin purposes)
+// Helper function to filter votes based on exclusion criteria
+function filterVotesByExclusion(electionVotes, voterInfoMap, exclusionCriteria) {
+  if (!exclusionCriteria || Object.keys(exclusionCriteria).length === 0) {
+    return electionVotes;
+  }
+  
+  // Create a mapping from vote verification codes to voter info
+  const voteCodeToVoterInfo = new Map();
+  Array.from(votes.entries()).forEach(([verificationCode, voteData]) => {
+    const voterData = voterInfoMap.get(verificationCode);
+    if (voterData) {
+      voteCodeToVoterInfo.set(verificationCode, voterData);
+    }
+  });
+  
+  return electionVotes.filter(vote => {
+    // Find the voter info for this vote by looking up the verification code
+    let voter = null;
+    for (const [code, voteData] of votes.entries()) {
+      if (voteData === vote) {
+        voter = voterInfoMap.get(code);
+        break;
+      }
+    }
+    
+    if (!voter) return true; // If no voter data found, include the vote
+    
+    // Check each exclusion criterion
+    for (const [property, values] of Object.entries(exclusionCriteria)) {
+      if (values && Array.isArray(values) && values.length > 0) {
+        if (property === 'isIphone' && values.includes(voter.isIphone)) {
+          return false; // Exclude this vote
+        } else if (values.includes(voter[property])) {
+          return false; // Exclude this vote
+        }
+      }
+    }
+    
+    return true; // Include this vote
+  });
+}
+
+// Get election results with dynamic exclusion
+app.get('/api/results/:electionId/dynamic', (req, res) => {
+  const { electionId } = req.params;
+  
+  if (!elections[electionId]) {
+    return res.status(404).json({ error: 'Election not found' });
+  }
+  
+  const electionVotes = Array.from(votes.values())
+    .filter(vote => vote.electionId === electionId);
+  
+  // Parse exclusion criteria from query parameters
+  const exclusionCriteria = {};
+  if (req.query.excludeCountries) {
+    exclusionCriteria.country = req.query.excludeCountries.split(',');
+  }
+  if (req.query.excludeDevices) {
+    const devices = req.query.excludeDevices.split(',');
+    if (devices.includes('iphone')) {
+      exclusionCriteria.isIphone = [true];
+    }
+  }
+  if (req.query.excludeISPs) {
+    exclusionCriteria.isp = req.query.excludeISPs.split(',');
+  }
+  if (req.query.excludeLanguages) {
+    exclusionCriteria.language = req.query.excludeLanguages.split(',');
+  }
+  
+  // All votes (no exclusions)
+  const resultsWithAll = {};
+  elections[electionId].questions.forEach((q, qIndex) => {
+    resultsWithAll[qIndex] = {};
+    q.options.forEach(option => {
+      resultsWithAll[qIndex][option] = electionVotes.filter(v => v.answers[qIndex] === option).length;
+    });
+  });
+  
+  // Votes after applying exclusions
+  const filteredVotes = filterVotesByExclusion(electionVotes, voterInfo, exclusionCriteria);
+  const resultsWithExclusions = {};
+  
+  // Calculate total votes (all votes)
+  const totalVotes = electionVotes.length;
+  
+  // Calculate filtered votes total
+  const filteredTotal = filteredVotes.length;
+  
+  // Calculate results with exclusions but adjust to maintain the same total
+  elections[electionId].questions.forEach((q, qIndex) => {
+    resultsWithExclusions[qIndex] = {};
+    
+    // First, count actual filtered votes for each option
+    const actualCounts = {};
+    let actualTotal = 0;
+    
+    q.options.forEach(option => {
+      const count = filteredVotes.filter(v => v.answers[qIndex] === option).length;
+      actualCounts[option] = count;
+      actualTotal += count;
+    });
+    
+    // Then adjust proportionally to match the original total
+    q.options.forEach(option => {
+      if (actualTotal === 0) {
+        // If no filtered votes, distribute evenly
+        resultsWithExclusions[qIndex][option] = Math.round(totalVotes / q.options.length);
+      } else {
+        // Otherwise, adjust proportionally
+        const proportion = actualCounts[option] / actualTotal;
+        resultsWithExclusions[qIndex][option] = Math.round(proportion * totalVotes);
+      }
+    });
+    
+    // Ensure the total matches by adjusting the first option if needed
+    const adjustedTotal = Object.values(resultsWithExclusions[qIndex]).reduce((a, b) => a + b, 0);
+    if (adjustedTotal !== totalVotes && q.options.length > 0) {
+      const diff = totalVotes - adjustedTotal;
+      resultsWithExclusions[qIndex][q.options[0]] += diff;
+    }
+  });
+  
+  res.json({
+    withExclusions: resultsWithExclusions,
+    withAll: resultsWithAll,
+    totalVotes: totalVotes,
+    filteredVotes: filteredTotal,
+    excludedVotes: totalVotes - filteredTotal,
+    exclusionCriteria: exclusionCriteria
+  });
+});
+
+// Get election results (for demo/admin purposes) - backward compatibility
 app.get('/api/results/:electionId', (req, res) => {
   const { electionId } = req.params;
   
@@ -408,6 +542,24 @@ app.get('/api/results/:electionId', (req, res) => {
     totalVotes: totalVotes,
     nonIphoneVotes: nonIphoneTotal,
     iphoneVotes: totalVotes - nonIphoneTotal
+  });
+});
+
+// Get available exclusion options
+app.get('/api/exclusion-options', (req, res) => {
+  const voterData = Array.from(voterInfo.values());
+  
+  // Extract unique values for each filterable property
+  const countries = [...new Set(voterData.map(v => v.country))].filter(Boolean).sort();
+  const isps = [...new Set(voterData.map(v => v.isp))].filter(Boolean).sort();
+  const languages = [...new Set(voterData.map(v => v.language))].filter(Boolean).sort();
+  const deviceTypes = ['iphone']; // Add more device types if needed
+  
+  res.json({
+    countries,
+    isps,
+    languages,
+    deviceTypes
   });
 });
 
