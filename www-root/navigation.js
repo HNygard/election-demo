@@ -1,5 +1,27 @@
 function navigate(direction) {
-    const nextPage = currentPage + direction;
+    let nextPage;
+    
+    if (currentPage === 'dynamic') {
+        if (direction === 1) {
+            nextPage = 0;
+        } else {
+            nextPage = 4;
+        }
+    } else {
+        nextPage = currentPage + direction;
+        
+        // Handle wrapping from result4 to dynamic
+        if (nextPage === totalPages) {
+            window.location.href = 'result-dynamic.html';
+            return;
+        }
+        // Handle wrapping from result0 to dynamic  
+        if (nextPage === -1) {
+            window.location.href = 'result-dynamic.html';
+            return;
+        }
+    }
+    
     if (nextPage >= 0 && nextPage < totalPages) {
         window.location.href = `result${nextPage}.html`;
     }
@@ -14,5 +36,15 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Update button states
-document.querySelector('.prev-btn').disabled = currentPage === 0;
-document.querySelector('.next-btn').disabled = currentPage === totalPages - 1;
+const prevBtn = document.querySelector('.prev-btn');
+const nextBtn = document.querySelector('.next-btn');
+
+if (prevBtn && nextBtn) {
+    if (currentPage === 'dynamic') {
+        prevBtn.disabled = false;
+        nextBtn.disabled = false;
+    } else {
+        prevBtn.disabled = false; // Always allow navigation in the circular system
+        nextBtn.disabled = false; // Always allow navigation in the circular system
+    }
+}
