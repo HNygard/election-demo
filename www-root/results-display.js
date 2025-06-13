@@ -175,27 +175,51 @@ function updateResults(resultsWithoutIphone, resultsWithIphone, containerId = 'r
  * @param {boolean} showRecentVotes - Whether to show recent votes section
  * @param {Function} resultsModifier - Optional function to modify results before display
  * @param {boolean} showBothResults - Whether to show both with and without iPhone results
+ * @param {string} excludeType - Type of exclusion to apply (e.g., 'iphone', 'telenor', 'norway')
  */
-async function fetchResults(containerId = 'resultsGrid', showRecentVotes = true, resultsModifier = null, showBothResults = false) {
+async function fetchResults(containerId = 'resultsGrid', showRecentVotes = true, resultsModifier = null, showBothResults = false, excludeType = null) {
     try {
-        const response = await fetch('/api/results/NDC 2025');
+        let apiUrl = '/api/results/NDC 2025';
+        if (excludeType) {
+            apiUrl += `?exclude=${excludeType}`;
+        }
+        
+        const response = await fetch(apiUrl);
         let data = await response.json();
         
         // Update the total votes display
         const totalVotesElementWithout = document.getElementById('totalVotesIphone');
-        totalVotesElementWithout.textContent = data.iphoneVotes;
+        if (totalVotesElementWithout) {
+            totalVotesElementWithout.textContent = data.iphoneVotes || data.excludedVotes || 0;
+        }
 
         const totalVotesElementWith = document.getElementById('totalVotesWithIphone');
-        totalVotesElementWith.textContent = data.totalVotes;
+        if (totalVotesElementWith) {
+            totalVotesElementWith.textContent = data.totalVotes;
+        }
+        
+        // Update excluded type display if element exists
+        const excludeTypeElement = document.getElementById('excludeType');
+        if (excludeTypeElement) {
+            const excludeDisplayNames = {
+                'iphone': 'iPhone users',
+                'telenor': 'Telenor customers',
+                'norway': 'Norwegian voters',
+                'germany': 'German voters',
+                'telia': 'Telia customers',
+                'o2': 'O2 customers'
+            };
+            excludeTypeElement.textContent = excludeDisplayNames[data.excludeType] || 'None';
+        }
         
         // New format with both withIphone and withoutIphone results
-        let withoutIphoneResults = data.withoutIphone;
-        let withIphoneResults = data.withIphone;
+        let withoutIphoneResults = data.withoutIphone || data.withoutExcluded;
+        let withIphoneResults = data.withIphone || data.withAll;
         
         // Apply custom modifications if provided
         if (resultsModifier && typeof resultsModifier === 'function') {
             // The modifier might expect the old format, so we pass withoutIphone by default
-            withoutIphoneResults = resultsModifier(data.withoutIphone);
+            withoutIphoneResults = resultsModifier(withoutIphoneResults);
             // We don't modify withIphoneResults
         }
         
@@ -223,6 +247,7 @@ async function fetchResults(containerId = 'resultsGrid', showRecentVotes = true,
  * @param {number} options.pollInterval - Polling interval in milliseconds
  * @param {Function} options.onWinnerDetermined - Callback when winner is determined
  * @param {boolean} options.showBothResults - Whether to show both with and without iPhone results
+ * @param {string} options.excludeType - Type of exclusion to apply
  */
 function initResultsDisplay(options = {}) {
     const {
@@ -232,7 +257,8 @@ function initResultsDisplay(options = {}) {
         pollInterval = 1000,
         onWinnerDetermined = null,
         questionSelector = '.results-title',
-        showBothResults = false
+        showBothResults = false,
+        excludeType = null
     } = options;
     
     if (questionSelector) {
@@ -240,7 +266,7 @@ function initResultsDisplay(options = {}) {
     }
     
     // Initial fetch
-    fetchResults(containerId, showRecentVotes, resultsModifier, showBothResults).then(winner => {
+    fetchResults(containerId, showRecentVotes, resultsModifier, showBothResults, excludeType).then(winner => {
         if (onWinnerDetermined && winner) {
             onWinnerDetermined(winner);
         }
@@ -249,7 +275,7 @@ function initResultsDisplay(options = {}) {
     // Set up polling
     if (pollInterval > 0) {
         setInterval(() => {
-            fetchResults(containerId, showRecentVotes, resultsModifier, showBothResults).then(winner => {
+            fetchResults(containerId, showRecentVotes, resultsModifier, showBothResults, excludeType).then(winner => {
                 if (onWinnerDetermined && winner) {
                     onWinnerDetermined(winner);
                 }

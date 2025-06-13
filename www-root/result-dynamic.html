@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Voter Exclusion Demo</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .results-title {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem;
+            text-align: center;
+        }
+
+        .results-subtitle {
+            color: var(--accent-color);
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            display: inline-block;
+            border: 2px solid var(--accent-color);
+        }
+
+        .vote-count {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--accent-color);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .result-item {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .result-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .table-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .language {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+
+        .percentage {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .votes {
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .recent-votes {
+            margin-top: 2rem;
+        }
+
+        .recent-votes h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .recent-vote {
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent-color);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Dynamic exclusion controls */
+        .exclusion-controls {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            box-shadow: var(--shadow);
+        }
+
+        .exclusion-controls h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .exclusion-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .exclusion-btn {
+            padding: 0.75rem;
+            border: 2px solid var(--accent-color);
+            background: white;
+            color: var(--accent-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .exclusion-btn:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .exclusion-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .exclusion-status {
+            background: #e8f4fd;
+            border: 1px solid var(--accent-color);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .exclusion-status strong {
+            color: var(--primary-color);
+        }
+        
+        /* Style for result data containers */
+        .result-data {
+            display: inline-block;
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container container-results">
+        <div class="nav-container">
+            <button class="nav-btn prev-btn" onclick="navigate(-1)">&larr;</button>
+            <div>
+                <h1>Dynamic Voter Exclusion Demo</h1>
+                <h2 class="results-title" style="margin: 0">(... loading ...)</h2>
+            </div>
+            <button class="nav-btn next-btn" onclick="navigate(1)">&rarr;</button>
+        </div>
+
+        <div class="exclusion-controls">
+            <h3>🎯 Exclude Voter Groups</h3>
+            <div class="exclusion-buttons">
+                <button class="exclusion-btn active" onclick="setExclusion(null)">No Exclusion</button>
+                <button class="exclusion-btn" onclick="setExclusion('iphone')">iPhone Users</button>
+                <button class="exclusion-btn" onclick="setExclusion('telenor')">Telenor</button>
+                <button class="exclusion-btn" onclick="setExclusion('norway')">Norway</button>
+                <button class="exclusion-btn" onclick="setExclusion('germany')">Germany</button>
+                <button class="exclusion-btn" onclick="setExclusion('telia')">Telia</button>
+                <button class="exclusion-btn" onclick="setExclusion('o2')">O2</button>
+            </div>
+        </div>
+
+        <div class="exclusion-status">
+            <strong>Currently excluding:</strong> <span id="excludeType">None</span><br>
+            <strong>Excluded votes:</strong> <span id="totalVotesIphone">0</span> of <span id="totalVotesWithIphone">0</span>
+        </div>
+
+        <div class="result-section" style="text-align: center;">
+            <div class="result-announcement">
+                <div class="winner-container">
+                    Election winner:
+                    <div class="winner">
+                        🎉 <span id="winnerDisplay">Loading...</span> 🎉
+                    </div>
+                </div>
+            </div>
+            
+            <div id="resultsGrid" class="results-grid">
+                <!-- Results will be populated here -->
+            </div>
+
+            <div class="recent-votes">
+                <h3>Recent Votes</h3>
+                <div id="recentVotes">
+                    <!-- Recent votes will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="results-display.js"></script>
+    <script>
+        const currentPage = 'dynamic';
+        const totalPages = 5;
+        
+        let currentExclusion = null;
+        let pollInterval = null;
+
+        function setExclusion(excludeType) {
+            currentExclusion = excludeType;
+            
+            // Update button states
+            document.querySelectorAll('.exclusion-btn').forEach(btn => btn.classList.remove('active'));
+            if (excludeType === null) {
+                document.querySelector('.exclusion-btn[onclick="setExclusion(null)"]').classList.add('active');
+            } else {
+                document.querySelector(`.exclusion-btn[onclick="setExclusion('${excludeType}')"]`).classList.add('active');
+            }
+            
+            // Restart polling with new exclusion
+            if (pollInterval) {
+                clearInterval(pollInterval);
+            }
+            
+            initResultsDisplay({
+                containerId: 'resultsGrid',
+                showRecentVotes: true,
+                pollInterval: 1000,
+                excludeType: excludeType,
+                onWinnerDetermined: (winner) => {
+                    document.getElementById('winnerDisplay').textContent = winner;
+                }
+            });
+        }
+
+        // Initialize with no exclusion
+        setExclusion(null);
+    </script>
+    <script src="navigation.js"></script>
+</body>
+</html>
