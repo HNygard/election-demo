@@ -1,6 +1,23 @@
 {
-    "current_election": "NDC 2025",
+    "current_election": "SSH - CVE-2025-0708",
     "elections": {
+        "SSH - CVE-2025-0708": {
+            "questions": [
+                {
+                    "question": "Who should be prime minister of Norway?",
+                    "description": "Current ruler: Hallvard Nygård",
+                    "options": [
+                        "Hallvard Nygård",
+                        "Donald Trump",
+                        "Jonas Gahr Støre",
+                        "Erna Solberg",
+                        "Sylvi Listhaug",
+                        "Trygve Slagsvold Vedum",
+                        "None of the above"
+                    ]
+                }
+            ]
+        },
         "NDC 2025": {
             "questions": [
                 {
