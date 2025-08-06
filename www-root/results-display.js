@@ -39,7 +39,7 @@ async function fetchQuestion(elementSelector = '.results-title') {
     try {
         const response = await fetch('/api/elections');
         const data = await response.json();
-        const question = data['NDC 2025'].questions[0].question;
+        const question = data['SSH - CVE-2025-0708'].questions[0].question;
         console.log('Fetched question:', question);
         document.querySelector(elementSelector).textContent = question;
     } catch (error) {
