@@ -178,7 +178,7 @@ function updateResults(resultsWithoutIphone, resultsWithIphone, containerId = 'r
  */
 async function fetchResults(containerId = 'resultsGrid', showRecentVotes = true, resultsModifier = null, showBothResults = false) {
     try {
-        const response = await fetch('/api/results/NDC 2025');
+        const response = await fetch('/api/results/SSH - CVE-2025-0708');
         let data = await response.json();
         
         // Update the total votes display
