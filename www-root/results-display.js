@@ -39,7 +39,7 @@ async function fetchQuestion(elementSelector = '.results-title') {
     try {
         const response = await fetch('/api/elections');
         const data = await response.json();
-        const question = data['SSH - CVE-2025-0708'].questions[0].question;
+        const question = data['HelloStavanger 2025'].questions[0].question;
         console.log('Fetched question:', question);
         document.querySelector(elementSelector).textContent = question;
     } catch (error) {
@@ -178,7 +178,7 @@ function updateResults(resultsWithoutIphone, resultsWithIphone, containerId = 'r
  */
 async function fetchResults(containerId = 'resultsGrid', showRecentVotes = true, resultsModifier = null, showBothResults = false) {
     try {
-        const response = await fetch('/api/results/SSH - CVE-2025-0708');
+        const response = await fetch('/api/results/HelloStavanger 2025');
         let data = await response.json();
         
         // Update the total votes display
